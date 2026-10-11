@@ -2,10 +2,10 @@
   "id": "pms",
   "title": "Popohřební služba",
   "description": "Vyšetřování v realitách a vzpomínkách Chaosu. Prototyp archivu, tabule, akcí a časovaných výprav.",
-  "version": "0.13.3",
+  "version": "0.13.4",
   "url": "https://github.com/f-tuma/post-mortum-service",
   "manifest": "https://github.com/f-tuma/post-mortum-service/releases/latest/download/system.json",
-  "download": "https://github.com/f-tuma/post-mortum-service/releases/download/v0.13.3/pms.zip",
+  "download": "https://github.com/f-tuma/post-mortum-service/releases/download/v0.13.4/pms.zip",
   "compatibility": {
     "minimum": "14",
     "verified": "14.368",

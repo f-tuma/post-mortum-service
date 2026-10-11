@@ -3,7 +3,8 @@ import {caseEntry} from './case-definition.mjs';
 import {validateCase} from './case-state.mjs';
 import {captureCaseSnapshot,assertNativeCaseSnapshot} from './case-snapshot.mjs';
 import {escape as escapeHTML} from './view-utils.mjs';
-import {caseJSONExport} from './case-transfer.mjs';
+import {buildCasePackage} from './case-package.mjs';
+import {readFoundryAsset,packageProgress} from './case-package-foundry.mjs';
 const flag=(doc,key)=>doc.getFlag('pms',key);
 export class CaseEditorService {
  constructor(cases){this.cases=cases;this.queue=Promise.resolve();}
@@ -39,7 +40,7 @@ export class CaseEditorService {
   const snapshot=captureCaseSnapshot({caseId:d.id,actors:game.actors.contents,scenes:game.scenes.contents,items:game.items.contents});
   d.scenePlans=d.scenePlans.map(plan=>{const scene=snapshot.scenes.find(s=>s.flags.pms.caseScene===plan.id);if(!scene)throw new Error(`Chybí scéna ${plan.name}.`);
    return {...plan,name:scene.name,width:scene.width,height:scene.height,grid:scene.grid.size,levels:scene.levels.map(l=>({id:l._id,key:l.flags?.pms?.levelKey??l._id,name:l.name,bottom:l.elevation.bottom,top:l.elevation.top,asset:l.background?.src??''})),edges:[],stairs:[],tokens:[]};});
-  d.npcs=d.npcs.map(n=>{const a=snapshot.actors.find(a=>a.flags.pms.caseNpc===n.id);if(!a)throw new Error(`Chybí NPC ${n.name}.`);return {...n,name:a.name,role:a.system.role,biography:a.system.biography};});
+  d.npcs=d.npcs.map(n=>{const a=snapshot.actors.find(a=>a.flags.pms.caseNpc===n.id);if(!a)throw new Error(`Chybí NPC ${n.name}.`);return {...n,name:a.name,role:a.system.role,biography:a.system.biography,...(a.img?{img:a.img}:{})};});
   caseEntry(d);next.snapshot=validateInitialSnapshot(snapshot,d);return next;
  }
  attach(draft,document){return this.serial(()=>this.campaignWrite(()=>{this.currentDraft(draft);return this.attachQueued(draft,document);}));}
@@ -54,10 +55,11 @@ export class CaseEditorService {
   next.snapshot=null;return next;
  }
  async export(draft){this.guard();const data=publishEditorDraft(draft,draft.publishedVersion);data.contentVersion=draft.publishedVersion;
-  const {json,bytes,preview}=caseJSONExport(data),escape=escapeHTML;
-  const content=preview?`<label>Obsah exportu<textarea name="export" readonly style="height:420px;font-family:monospace">${escape(json)}</textarea></label>`:`<p><strong>${escape(data.title)}</strong> · ${(bytes/1024/1024).toFixed(1)} MiB · ${data.initialSnapshot.scenes.length} scén · ${data.npcs.length} NPC. Soubor je připravený ke stažení.</p>`;
-  const form=await this.cases.controls.promptForm('Export autorské přípravy',`<p>Definice a výchozí nativní svět. Mapové a zvukové soubory zůstávají ve svých cestách. Soukromá příprava patří pouze vypravěči.</p>${content}`,{label:'Stáhnout soubor',position:{width:Math.min(1100,window.innerWidth-64)}});
-  if(form)foundry.utils.saveDataToFile(json,'application/json',`${draft.caseId}-v${data.contentVersion}.json`);
+  const progress=packageProgress('Připravuji balíček případu');let bundle;
+  try{bundle=await buildCasePackage(data,{readAsset:readFoundryAsset,onProgress:state=>{this.guard();progress.update(state);}});}finally{progress.close();}
+  this.guard();const content=`<p><strong>${escapeHTML(data.title)}</strong> · ${(bundle.bytes.byteLength/1024/1024).toFixed(1)} MiB</p><ul><li>${data.initialSnapshot.scenes.length} scén včetně zdí, dveří, podlaží a světel.</li><li>${data.npcs.length} NPC a autorská příprava.</li><li>${bundle.fileCount} přibalených souborů: mapy, portréty, tokeny, obrázky a zvuky.</li></ul>`;
+  const form=await this.cases.controls.promptForm('Export celého případu',`<p>Jeden ZIP pro přenos do jiného světa. Import nahraje soubory a upraví jejich cesty. Balíček obsahuje řešení případu a patří vypravěči.</p>${content}`,{label:'Stáhnout ZIP',position:{width:680}});
+  if(form){this.guard();foundry.utils.saveDataToFile(bundle.bytes,'application/zip',`${draft.caseId}-v${data.contentVersion}.zip`);}
  }
  detach(draft,document){return this.serial(()=>this.campaignWrite(()=>{this.currentDraft(draft);return this.detachQueued(draft,document);}));}
  async detachQueued(draft,document){this.guard(true);if(flag(document,'caseBundle')!==draft.caseId)throw new Error('Dokument nepatří otevřenému případu.');const kind=document.documentName,key=kind==='Scene'?'caseScene':kind==='Actor'?'caseNpc':kind==='Item'?'caseTemplateItem':null;if(!key)throw new Error('Tento dokument nelze odpojit.');

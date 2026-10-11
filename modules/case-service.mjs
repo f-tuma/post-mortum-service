@@ -13,7 +13,8 @@ import {availablePreparationRoster} from './avatar-state.mjs';
 import {presentScene} from './scene-transition.mjs';
 import {assertSnapshotIdentities,assertNativeCaseSnapshot} from './case-snapshot.mjs';
 import {enqueueCaseWrite} from './case-write-queue.mjs';
-import {assertCaseTransferSize} from './case-transfer.mjs';
+import {readCaseFile,restorePackageAssets} from './case-package.mjs';
+import {nativeCaseAssetStorage,packageProgress} from './case-package-foundry.mjs';
 import {versionImportedCase} from './case-content-version.mjs';
 import {installCaseNpcPortraits} from './npc-art.mjs';
 const NS='pms';
@@ -71,15 +72,28 @@ export class CaseService {
   this.selectedId=id;if(this.guideApplication)await this.guideApplication.close();this.guideApplication=undefined;
  }
  gm(){if(!this.visits.isAuthority)throw new Error('Případ připravuje hlavní připojený vypravěč.');}
- async importDialog(){this.gm();return this.controls.promptForm('Import přípravy případu',`<p>Vyber přípravu ve formátu PMS JSON. Export editoru obsahuje také výchozí svět: celý import jej obnoví, proto je dostupný jen mezi výpravami. Starší přípravy bez výchozího světa doplní chybějící dokumenty. Archiv a skutečný výsledek zůstávají uložené.</p><label>Soubor případu<input type="file" name="caseFile" accept=".json,application/json" required></label>${this.data?'<label class="pms-checkbox"><input type="checkbox" name="guideOnly" checked>Aktualizovat jen příručku</label><p>Zachová nastavení případu, postavy, scény i probíhající výpravu.</p>':''}`,{submit:async f=>{const file=f.get('caseFile');assertCaseTransferSize(file?.size);let raw;try{raw=JSON.parse(await file.text());}catch{throw new Error('Soubor nemá platný formát JSON. Vyber jiný soubor.');}await (f.get('guideOnly')?this.updateGuide(raw):this.install(raw));}});}
- async updateGuide(raw){this.gm();if(this.busy)throw new Error('Import již probíhá.');if(!this.data||!this.vault)throw new Error('Nejdřív importuj celý případ.');this.busy=true;const caseId=this.selectedId;
-  try{return await enqueueCaseWrite(this,async()=>{const vault=game.journal.find(d=>marked(d,'kind')==='caseVault'&&marked(d,'caseId')===caseId),data=withUpdatedGuide(this.forCase(caseId),raw),revision=(marked(vault,'editorRevision')??0)+1;
+ async importDialog(){this.gm();return this.controls.promptForm('Import přípravy případu',`<p>Vyber ZIP celého případu nebo starší PMS JSON.</p><p>ZIP obsahuje i použité soubory. Import je nahraje do tohoto světa a upraví cesty. Celý import obnoví výchozí scény a NPC; použij jej mezi výpravami. Archiv a skutečný výsledek zůstanou uložené.</p><label>Soubor případu<input type="file" name="caseFile" accept=".zip,application/zip,.json,application/json" required></label>${this.data?'<label class="pms-checkbox"><input type="checkbox" name="guideOnly" checked>Aktualizovat jen příručku</label><p>Zachová nastavení případu, postavy, scény i probíhající výpravu. Nahrají se jen soubory použité v příručce.</p>':''}`,{submit:f=>this.importFile(f.get('caseFile'),{guideOnly:Boolean(f.get('guideOnly'))})});}
+ async importFile(file,{guideOnly=false}={}){
+  this.gm();const progress=packageProgress('Načítám přípravu případu');
+  try{
+   const bundle=await readCaseFile(file,{validate:validateCase,onProgress:s=>progress.update(s)});this.gm();
+   const prepare=bundle.manifest?async data=>restorePackageAssets(bundle,data,{store:nativeCaseAssetStorage(()=>this.gm()),guard:()=>this.gm(),onProgress:s=>progress.update(s)}):undefined;
+   return await (guideOnly?this.updateGuide(bundle.data,{prepare}):this.install(bundle.data,{prepare}));
+  }finally{progress.close();}
+ }
+ async updateGuide(raw,{prepare}={}){this.gm();if(this.busy)throw new Error('Import již probíhá.');if(!this.data||!this.vault)throw new Error('Nejdřív importuj celý případ.');this.busy=true;const caseId=this.selectedId;
+  try{return await enqueueCaseWrite(this,async()=>{const vault=game.journal.find(d=>marked(d,'kind')==='caseVault'&&marked(d,'caseId')===caseId),installed=await this.reloadDefinition(caseId);let data=withUpdatedGuide(installed,raw);
+   if(prepare){const guide=await prepare({id:raw.id,guide:raw.guide,guidePages:raw.guidePages});this.gm();data=withUpdatedGuide(installed,{...raw,...guide});}
+   const revision=(marked(vault,'editorRevision')??0)+1;
    const update={'flags.pms.sealed':await this.visits.seal(data),'flags.pms.editorRevision':revision};
-   if(marked(vault,'editorDraft')){const draft=await this.visits.unseal(marked(vault,'editorDraft'));draft.definition=withUpdatedGuide(draft.definition,raw);draft.revision=revision;update['flags.pms.editorDraft']=await this.visits.seal(draft);}
+   if(marked(vault,'editorDraft')){const draft=await this.visits.unseal(marked(vault,'editorDraft'));draft.definition=withUpdatedGuide(draft.definition,{...raw,guide:data.guide,guidePages:data.guidePages});draft.revision=revision;update['flags.pms.editorDraft']=await this.visits.seal(draft);}
    await vault.update(update);this.definitions.set(data.id,data);if(this.guideApplication)await this.guideApplication.close();this.guideApplication=undefined;ui.notifications.info('Příručka aktualizována. Rozehraná výprava zůstává zachována.');return this.showGuide({caseId});});}finally{this.busy=false;}
  }
- async install(raw){this.gm();if(this.busy)throw new Error('Import již probíhá.');const incoming=validateCase(raw);this.busy=true;
-  try{return await enqueueCaseWrite(this,async()=>{if(this.visits.state?.status==='active'||game.pms?.avatars.state?.preparation?.status==='preparing'||this.launching)throw new Error('Celý import a doplnění scén dokonči až po návratu a mimo tvorbu Avatarů. Při výpravě lze aktualizovat jen příručku.');const installed=await this.reloadDefinition(incoming.id),memory=game.pms?.avatars.state?.initialized?await this.memory.read():null,data=versionImportedCase(incoming,installed,memory?.templates[incoming.id]);if(data.initialSnapshot){assertSnapshotIdentities(data.initialSnapshot,{actors:game.actors,scenes:game.scenes,items:game.items});assertNativeCaseSnapshot(data.initialSnapshot);}
+ async install(raw,{prepare}={}){this.gm();if(this.busy)throw new Error('Import již probíhá.');const incoming=validateCase(raw);this.busy=true;
+  try{return await enqueueCaseWrite(this,async()=>{if(this.visits.state?.status==='active'||game.pms?.avatars.state?.preparation?.status==='preparing'||this.launching)throw new Error('Celý import a doplnění scén dokonči až po návratu a mimo tvorbu Avatarů. Při výpravě lze aktualizovat jen příručku.');const installed=await this.reloadDefinition(incoming.id),memory=game.pms?.avatars.state?.initialized?await this.memory.read():null;
+   if(incoming.initialSnapshot){assertSnapshotIdentities(incoming.initialSnapshot,{actors:game.actors,scenes:game.scenes,items:game.items});assertNativeCaseSnapshot(incoming.initialSnapshot);}
+   const prepared=prepare?validateCase(await prepare(incoming)):incoming;this.gm();
+   const data=versionImportedCase(prepared,installed,memory?.templates[incoming.id]);if(data.initialSnapshot)assertNativeCaseSnapshot(data.initialSnapshot);
    const sealed=await this.visits.seal(data),vault=game.journal.find(d=>marked(d,'kind')==='caseVault'&&marked(d,'caseId')===data.id);if(vault)await vault.update({'flags.pms.sealed':sealed,'flags.pms.editorRevision':(marked(vault,'editorRevision')??0)+1,'flags.pms.editorDraft':new foundry.data.operators.ForcedDeletion(),'flags.core.sheetClass':'pms.PMSCaseJournal'});else await JournalEntry.create({name:`${data.title} · příprava vypravěče`,ownership:{default:0},flags:{core:{sheetClass:'pms.PMSCaseJournal'},pms:{kind:'caseVault',caseId:data.id,sealed}}});
    const selected=this.selectedId,preparing=game.pms?.avatars.state?.preparation;this.data=data;if((this.visits.state?.status==='active'&&this.visits.state.caseId!==data.id)||(preparing?.status==='preparing'&&preparing.caseId!==data.id))this.selectedId=selected;
    this.guideApplication=undefined;const physical=await this.preparationDefinition(data.id);
