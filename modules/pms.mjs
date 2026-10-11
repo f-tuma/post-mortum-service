@@ -21,6 +21,7 @@ import {registerActionChatHooks,refreshActionChat} from './action-chat.mjs';
 import {CaseEditorService} from './case-editor-service.mjs';
 import {CaseEditorApplication} from './case-editor-app.mjs';
 import {CaseLifecycleService} from './case-lifecycle.mjs';
+import {StarterCaseService} from './starter-case.mjs';
 import {registerSoulTokenHooks} from './soul-token.mjs';
 import {NpcTokenService,registerNpcTokenHooks} from './npc-token-service.mjs';
 
@@ -43,6 +44,7 @@ Hooks.once("init", () => {
   game.settings.register("pms", "visitKey", { scope: "client", config: false, type: String, default: "" });
   game.settings.register("pms", "timelineFullscreen", { scope: "client", config: false, type: Boolean, default: true });
   game.settings.register("pms", "gmPreparationProgress", { scope: "client", config: false, type: Object, default: {} });
+  game.settings.register("pms", "starterCase", { scope: "world", config: false, type: String, default: "" });
 });
 Hooks.on('preCreateActor',actor=>{
   if(actor.type==='avatar')actor.updateSource({'prototypeToken.sight.enabled':true});
@@ -52,6 +54,7 @@ Hooks.on('preCreateItem',item=>{
 });
 Hooks.once("ready", async () => {
   document.body.classList.add("pms-system");
+  const previouslyInitialized=game.journal.some(d=>d.getFlag('pms','kind')==='authorityProof');
   await initializeGMClientAuthority();
   const service = new BoardService();
   await service.initialize();
@@ -75,10 +78,15 @@ Hooks.once("ready", async () => {
   game.pms = { service, board, visits, visit, timeline, cases, caseMenu, hub, avatars, avatarWizard, rewards, rewardCard, memory, openHub:()=>hub.enter().catch(error=>ui.notifications.warn(error.message)), openRewards:()=>{if(game.user.isGM)return rewardCard.render({force:true});}, openAvatarCreation:()=>avatarWizard.render({force:true}), openBoard: options => board.openCase(options).catch(error=>ui.notifications.warn(error.message)), openTimeline: () => {if(!game.user.isGM)return;return timeline.render({force:true});} };
   Object.assign(game.pms,{npcTokens,catalog,caseCatalog,sectorArchive:new SectorArchiveApplication(catalog),openSectorArchive:()=>game.pms.sectorArchive.render({force:true})});
   if(game.user.isGM)game.pms.caseLifecycle=new CaseLifecycleService(cases);
+  const starterCase=new StarterCaseService(cases,{previouslyInitialized});game.pms.starterCase=starterCase;
+  Hooks.on('pmsAuthorityChanged',()=>{if(visits.isAuthority)starterCase.ensure().catch(error=>ui.notifications.error(error.message));});
   await npcTokens.syncAll();
   if(game.user.isGM){const editorService=new CaseEditorService(cases),caseEditor=new CaseEditorApplication(editorService);Object.assign(game.pms,{editorService,caseEditor,openCaseEditor:()=>caseEditor.open().catch(e=>ui.notifications.warn(e.message))});}
   visits.onReturnReady=state=>hub.returnFromVisit(state);
-  if(visits.isAuthority){try{await hub.ensure();await catalog.ensureGuide();for(const data of cases.definitions.values())await hub.publishOffer(data);}catch(error){ui.notifications.error(error.message);}}
+  if(visits.isAuthority){try{await hub.ensure();await hub.startup();await catalog.ensureGuide();}catch(error){ui.notifications.error(error.message);}
+   try{await starterCase.ensure();}catch(error){ui.notifications.error(error.message);}
+   try{for(const data of cases.definitions.values())await hub.publishOffer(data);}catch(error){ui.notifications.error(error.message);}
+  }
   if(canvas.ready)hub.mount();avatars.onChange(()=>hub.energy());
   if(visits.isAuthority&&visits.privateState?.status==='returned'&&avatars.state?.initialized){try{await visits.publish();}catch(error){ui.notifications.error(error.message);}}
   visits.onChange(()=>avatarWizard.changed());
@@ -86,6 +94,7 @@ Hooks.once("ready", async () => {
   refreshActionChat();
   avatarWizard.changed();
   ui.controls.render({force:true});
+  try{await hub.startup();}catch(error){ui.notifications.error(error.message);}
 });
 Hooks.on("getSceneControlButtons",controls=>{
   controls.pms={name:"pms",title:"Popohřební služba",icon:"fa-solid fa-feather-pointed",order:90,tools:{

@@ -67,6 +67,7 @@ export class CaseLifecycleService {
   this.guard(caseId);const vault=this.vault(caseId);if(flag(vault,'caseLifecycle'))throw new Error('Případ už je v koši.');const {documents,campaign}=await this.inspect(caseId);
   const visibility=[];for(const [type,list]of Object.entries(documents))if(type!=='Folder')for(const doc of list)if(doc!==vault)visibility.push({type,id:doc.id,ownership:structuredClone(doc.ownership??{default:0}),...(type==='Scene'?{navigation:doc.navigation}: {})});
   const saved={version:1,visibility};await this.park(documents);this.guard(caseId);
+  await game.pms?.starterCase?.dismiss(caseId);
   await vault.update({'flags.pms.caseTrash':await this.cases.visits.seal(saved),'flags.pms.caseLifecycle':'trashed','flags.pms.caseTrashedAt':Date.now(),'flags.pms.editorRevision':(flag(vault,'editorRevision')??0)+1});
   if(campaign?.hubBallot?.caseIds?.includes(caseId)||campaign?.hubBallot?.selectedCaseId===caseId){const next=structuredClone(campaign);next.hubBallot={...next.hubBallot,status:'canceled',votes:{},selectedCaseId:null};next.revision++;await game.pms.avatars.persist(next);game.pms.avatars.notify();}
   for(const entry of visibility){this.guard(caseId);const doc=collection(game,entry.type).get(entry.id);if(doc)await doc.update({ownership:new foundry.data.operators.ForcedReplacement({default:0}),...(entry.type==='Scene'?{navigation:false}:{}),...(flag(doc,'kind')==='caseOffer'?{'flags.pms.caseLifecycle':'trashed'}:{})});}

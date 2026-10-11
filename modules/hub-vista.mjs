@@ -115,11 +115,39 @@ export function publicCaseOffer(data){return {
 };}
 
 export class HubVistaService {
- constructor(){this.root=null;this.returnedVisit=null;this.busy=false;}
+ constructor(){this.root=null;this.returnedVisit=null;this.busy=false;this.startupPending=false;this.startupDone=false;}
  get scene(){return game.scenes.find(s=>s.getFlag('pms','hubVista'));}
  async ensure(){
   if(!game.pms?.visits.isAuthority)throw new Error('Sektor připravuje hlavní připojený vypravěč.');
   this.installing??=(async()=>{if(!this.scene)await Scene.create(hubSceneData(),{keepId:true});else await upgradeHubVista(this.scene);})().finally(()=>{this.installing=null;});await this.installing;return this.scene;
+ }
+ async startup(){
+  if(this.startupDone)return false;
+  this.startupPending=true;
+  if(this.starting)return this.starting;
+  const open=async()=>{
+   await canvas.initializing;
+   const finished=()=>{this.startupDone=true;this.startupPending=false;};
+   // Reconnects keep the native active case and its Level. MHD restores its
+   // fullscreen intermission separately, including an interrupted departure.
+   if(game.pms.visits.state?.status==='active'||!canvas.initialized){finished();return false;}
+   const scene=this.scene;
+   // A player can connect to a new world before the GM creates the sector.
+   // createScene retries this one initial view; later creations never pull them.
+   if(!scene)return false;
+   await presentScene(scene);
+   const visit=game.pms.visits.state;
+   if(visit?.status==='active'){
+    finished();
+    const active=game.scenes.active;
+    if(canvas.scene?.id===scene.id&&active?.getFlag('pms','caseBundle')===visit.caseId)await presentScene(active);
+    return false;
+   }
+   if(game.pms.visits.isAuthority&&!scene.active)await scene.activate();
+   finished();this.nativeTools=false;canvas.tokens.activate();this.refresh();this.fit();
+   return true;
+  };
+  this.starting=open().finally(()=>{this.starting=null;});return this.starting;
  }
  async enter(){
   if(game.pms?.visits.state?.status==='active')throw new Error('Nejdřív dokončete návštěvu reality.');
@@ -246,6 +274,7 @@ export class PMSCaseOfferJournal extends foundry.applications.sheets.journal.Jou
 export function registerHubHooks(){
  game.settings.register('pms','hubMotion',{name:'Jemný pohyb v sektoru PMS',hint:'Paralaxa obrazových vrstev při posunu nativní kamery pravým tažením. Respektuje omezení pohybu systému. Světla a jejich animace se nastavují nativně ve Foundry.',scope:'client',config:true,type:Boolean,default:true,onChange:()=>game.pms?.hub.parallax?.sync()});
  Hooks.on('canvasReady',()=>game.pms?.hub.mount());Hooks.on('canvasTearDown',()=>game.pms?.hub.unmount());Hooks.on('canvasPan',()=>game.pms?.hub.pan());
+ Hooks.on('createScene',scene=>{if(scene.getFlag('pms','hubVista')&&game.pms?.hub.startupPending)game.pms.hub.startup().catch(error=>ui.notifications.error(error.message));});
  Hooks.on('activateCanvasLayer',()=>game.pms?.hub.refresh());
  for(const event of ['renderBoardApplication','closeBoardApplication','renderAvatarCreationApplication','closeAvatarCreationApplication'])Hooks.on(event,()=>game.pms?.hub.parallax?.sync());
  for(const event of ['createTile','updateTile','deleteTile'])Hooks.on(event,tile=>{if(tile.parent?.id===canvas.scene?.id)game.pms?.hub.mount();});

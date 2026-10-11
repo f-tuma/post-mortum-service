@@ -2,7 +2,7 @@
 
 Vyšetřovací TTRPG systém pro Foundry VTT 14. Výpravy vstupují do samostatných realit, sbírají vodítka a skládají případy na společné tabuli důkazů. MHD uzavírá návštěvy; odrazy umožňují návraty bez změny skutečného výsledku.
 
-Aktuální verze: **0.13.6**, testovaná s Foundry **14.368**. Jde o verzi pro společné testování.
+Aktuální verze: **0.13.7**, testovaná s Foundry **14.368**. Jde o verzi pro společné testování.
 
 ## Instalace přes manifest
 
@@ -14,12 +14,13 @@ https://github.com/f-tuma/post-mortum-service/releases/latest/download/system.js
 
 Poté vytvoř svět se systémem **Popohřební služba**. Stejný manifest slouží k následným aktualizacím; každé vydání stahuje ZIP své konkrétní verze.
 
+Po připojení se automaticky otevře celoobrazovkový **Sektor PMS** s recepcí, archivem a MHD. Při probíhající výpravě zůstane otevřená scéna případu; rozpracovaná tvorba Avatarů obnoví obrazovku MHD. Nativní rozhraní je přístupné tlačítkem **Nástroje Foundry / Rozhraní Foundry** v sektoru.
+
 ## Úvodní případ: Zkáza rodu Tétů
 
-Stáhni [přípravu Tétů](https://github.com/f-tuma/post-mortum-service/releases/latest/download/tetove.json).
-Jako vypravěč otevři v levém panelu **Popohřební služba → Podklady a příprava → Importovat případ…** a vyber tento JSON.
+Tétové jsou součástí systému jako první sezení. V novém světě se při prvním připojení hlavního vypravěče automaticky připraví 9 NPC, 20 vodítek, 30 časových událostí a scény s gridem, dveřmi, stěnami a podlažími. V recepci otevři **Přípravu pro Vypravěče**; výpravu zahájíš později v MHD.
 
-Import vytvoří 9 NPC, 20 vodítek, 30 časových událostí a scény s gridem, dveřmi, stěnami a podlažími. Příprava se nachází také v `cases/tetove.json` uvnitř instalace systému.
+Aktualizace systému nepřepisuje případy ve stávajícím světě ani nevrací odebrané Téty. Pro ruční import do staršího světa je příprava v `cases/tetove.json` uvnitř instalace nebo jako [samostatný soubor](https://github.com/f-tuma/post-mortum-service/releases/latest/download/tetove.json). Použij **Popohřební služba → Podklady a příprava → Importovat případ…**.
 
 Případ obsahuje informace pro vypravěče včetně řešení záhady. Při aktualizaci rozehraného případu můžeš zvolit pouze aktualizaci příručky.
 
@@ -61,7 +62,7 @@ Volba **Aktualizovat jen příručku** přenese pouze její obsah a použité so
 
 Tento repozitář obsahuje distribuovanou část systému. Pracovní podklady a testovací světy nejsou jeho součástí.
 
-Po změně verze v `system.json` vytvoř odpovídající Git tag, například `v0.13.6`. Workflow ověří verzi, sestaví `pms.zip`, `system.json`, `tetove.json` a kontrolní součty, nahraje je do návrhu vydání a po dokončení uploadu jej zveřejní.
+Po změně verze v `system.json` vytvoř odpovídající Git tag, například `v0.13.7`. Workflow ověří verzi, sestaví `pms.zip`, `system.json`, `tetove.json` a kontrolní součty, nahraje je do návrhu vydání a po dokončení uploadu jej zveřejní.
 
 Lokální sestavení z kořene tohoto repozitáře:
 
