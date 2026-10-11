@@ -19,6 +19,8 @@ import {versionImportedCase} from './case-content-version.mjs';
 import {installCaseNpcPortraits} from './npc-art.mjs';
 import {buildPreparationPlan,preparationProgress,setPreparationTask,viewPreparationMap,preparationActor,PREPARATION_PAGES} from './case-preparation.mjs';
 import {preparationPages} from './case-preparation-view.mjs';
+import {caseRemoved,assertCaseAvailable} from './case-lifecycle.mjs';
+import {updateCaseZip} from './case-update.mjs';
 const NS='pms';
 const marked=(d,key)=>d.getFlag(NS,key);
 export class PMSCaseJournal extends foundry.applications.sheets.journal.JournalEntrySheet {
@@ -83,20 +85,20 @@ export class PMSResultJournal extends foundry.applications.sheets.journal.Journa
 }
 export class CaseService {
  constructor(visits,controls){this.visits=visits;this.controls=controls;this.definitions=new Map();this.runtimeDefinitions=new Map();this.selectedId=null;this.busy=false;}
- get data(){return this.definitions.get(this.selectedId)??null;}
+ get data(){return this.forCase(this.selectedId);}
  set data(value){if(!value){this.selectedId=null;return;}this.definitions.set(value.id,value);this.selectedId=value.id;}
  get vault(){return game.journal.find(d=>marked(d,'kind')==='caseVault'&&marked(d,'caseId')===this.selectedId);}
- forCase(id){return game.user.isGM?this.definitions.get(id)??null:null;}
+ forCase(id){return game.user.isGM&&!caseRemoved(id)?this.definitions.get(id)??null:null;}
  definitionFor(id){const authored=this.forCase(id),runtime=this.runtimeDefinitions.get(id);return authored?{...authored,...(runtime&&!(authored.initialSnapshot&&authored.contentVersion>runtime.contentVersion)?runtime:{})}:null;}
- get availableCases(){return game.user.isGM?[...this.definitions.values()].map(d=>({id:d.id,title:d.title})):[];}
- async reloadDefinition(id){if(!game.user.isGM)return null;const vault=game.journal.find(d=>marked(d,'kind')==='caseVault'&&marked(d,'caseId')===id);if(!vault)return this.forCase(id);const data=validateCase(await this.visits.unseal(marked(vault,'sealed')));this.definitions.set(id,data);return data;}
- async initialize(){if(!game.user.isGM||game.pmsAuthority?.failed)return;if(!this.authorityHook){this.authorityHook=Hooks.on('pmsAuthorityChanged',()=>{if(this.visits.isAuthority)this.initialize().then(()=>ui.controls.render({force:true})).catch(e=>ui.notifications.warn(e.message));});}for(const vault of game.journal.filter(d=>marked(d,'kind')==='caseVault')){try{this.data=await this.reloadDefinition(marked(vault,'caseId'));}catch(e){ui.notifications.warn(e.message);}}
+ get availableCases(){return game.user.isGM?[...this.definitions.values()].filter(d=>!caseRemoved(d.id)).map(d=>({id:d.id,title:d.title})):[];}
+ async reloadDefinition(id){if(!game.user.isGM)return null;assertCaseAvailable(id);const vault=game.journal.find(d=>marked(d,'kind')==='caseVault'&&marked(d,'caseId')===id);if(!vault)return this.forCase(id);const data=validateCase(await this.visits.unseal(marked(vault,'sealed')));this.definitions.set(id,data);return data;}
+ async initialize(){if(!game.user.isGM||game.pmsAuthority?.failed)return;if(!this.lifecycleHook)this.lifecycleHook=Hooks.on('deleteJournalEntry',doc=>{if(marked(doc,'kind')==='caseVault'){const id=marked(doc,'caseId');this.definitions.delete(id);this.runtimeDefinitions.delete(id);if(this.selectedId===id)this.selectedId=null;}});if(!this.authorityHook){this.authorityHook=Hooks.on('pmsAuthorityChanged',()=>{if(this.visits.isAuthority)this.initialize().then(()=>ui.controls.render({force:true})).catch(e=>ui.notifications.warn(e.message));});}for(const vault of game.journal.filter(d=>marked(d,'kind')==='caseVault'&&!caseRemoved(marked(d,'caseId')))){try{this.data=await this.reloadDefinition(marked(vault,'caseId'));}catch(e){ui.notifications.warn(e.message);}}
   const campaign=game.journal.find(d=>marked(d,'kind')==='avatarCampaign')?.getFlag(NS,'campaign');
   const preferred=campaign?.preparation?.caseId??this.visits.state?.caseId;if(this.definitions.has(preferred))this.selectedId=preferred;
  }
  async refreshTemplates(){if(!this.memory?.avatars.state?.initialized)return;const memory=await this.memory.read();for(const [id,template] of Object.entries(memory.templates))this.runtimeDefinitions.set(id,template.definition);}
  async preparationDefinition(id){this.gm();await this.reloadDefinition(id);await this.refreshTemplates();const data=this.definitionFor(id);if(!data)throw new Error('Nejdřív importuj vybraný případ.');return data;}
- async select(id){this.gm();if(!this.forCase(id))throw new Error('Případ není importovaný.');if(this.visits.state?.status==='active'&&this.visits.state.caseId!==id)throw new Error('Nejdřív dokonči aktuální návštěvu.');
+ async select(id){this.gm();assertCaseAvailable(id);if(!this.forCase(id))throw new Error('Případ není importovaný.');if(this.visits.state?.status==='active'&&this.visits.state.caseId!==id)throw new Error('Nejdřív dokonči aktuální návštěvu.');
   const p=game.pms?.avatars.state?.preparation;if(p?.status==='preparing'&&p.caseId!==id)throw new Error('Nejdřív dokonči otevřenou přípravu Avatarů.');
   this.selectedId=id;if(this.guideApplication)await this.guideApplication.close();this.guideApplication=undefined;
  }
@@ -111,15 +113,15 @@ export class CaseService {
   }finally{progress.close();}
  }
  async updateGuide(raw,{prepare}={}){this.gm();if(this.busy)throw new Error('Import již probíhá.');if(!this.data||!this.vault)throw new Error('Nejdřív importuj celý případ.');this.busy=true;const caseId=this.selectedId;
-  try{return await enqueueCaseWrite(this,async()=>{const vault=game.journal.find(d=>marked(d,'kind')==='caseVault'&&marked(d,'caseId')===caseId),installed=await this.reloadDefinition(caseId);let data=withUpdatedGuide(installed,raw);
+  try{return await enqueueCaseWrite(this,async()=>{assertCaseAvailable(caseId);const vault=game.journal.find(d=>marked(d,'kind')==='caseVault'&&marked(d,'caseId')===caseId),installed=await this.reloadDefinition(caseId);let data=withUpdatedGuide(installed,raw);
    if(prepare){const guide=await prepare({id:raw.id,guide:raw.guide,guidePages:raw.guidePages});this.gm();data=withUpdatedGuide(installed,{...raw,...guide});}
    const revision=(marked(vault,'editorRevision')??0)+1;
    const update={'flags.pms.sealed':await this.visits.seal(data),'flags.pms.editorRevision':revision};
    if(marked(vault,'editorDraft')){const draft=await this.visits.unseal(marked(vault,'editorDraft'));draft.definition=withUpdatedGuide(draft.definition,{...raw,guide:data.guide,guidePages:data.guidePages});draft.revision=revision;update['flags.pms.editorDraft']=await this.visits.seal(draft);}
    await vault.update(update);this.definitions.set(data.id,data);if(this.guideApplication)await this.guideApplication.close();this.guideApplication=undefined;ui.notifications.info('Příručka aktualizována. Rozehraná výprava zůstává zachována.');return this.showGuide({caseId});});}finally{this.busy=false;}
  }
- async install(raw,{prepare}={}){this.gm();if(this.busy)throw new Error('Import již probíhá.');const incoming=validateCase(raw);this.busy=true;
-  try{return await enqueueCaseWrite(this,async()=>{if(this.visits.state?.status==='active'||game.pms?.avatars.state?.preparation?.status==='preparing'||this.launching)throw new Error('Celý import a doplnění scén dokonči až po návratu a mimo tvorbu Avatarů. Při výpravě lze aktualizovat jen příručku.');const installed=await this.reloadDefinition(incoming.id),memory=game.pms?.avatars.state?.initialized?await this.memory.read():null;
+ async install(raw,{prepare,expectedRevision}={}){this.gm();if(this.busy)throw new Error('Import již probíhá.');const incoming=validateCase(raw);this.busy=true;
+  try{return await enqueueCaseWrite(this,async()=>{assertCaseAvailable(incoming.id);const currentVault=game.journal.find(d=>marked(d,'kind')==='caseVault'&&marked(d,'caseId')===incoming.id);if(expectedRevision!==undefined&&(!currentVault||(marked(currentVault,'editorRevision')??0)!==expectedRevision))throw new Error('Případ se změnil od potvrzení aktualizace. Vyber ZIP znovu.');if(this.visits.state?.status==='active'||game.pms?.avatars.state?.preparation?.status==='preparing'||this.launching)throw new Error('Celý import a doplnění scén dokonči až po návratu a mimo tvorbu Avatarů. Při výpravě lze aktualizovat jen příručku.');const installed=await this.reloadDefinition(incoming.id),memory=game.pms?.avatars.state?.initialized?await this.memory.read():null;
    if(incoming.initialSnapshot){assertSnapshotIdentities(incoming.initialSnapshot,{actors:game.actors,scenes:game.scenes,items:game.items});assertNativeCaseSnapshot(incoming.initialSnapshot);}
    const prepared=prepare?validateCase(await prepare(incoming)):incoming;this.gm();
    const data=versionImportedCase(prepared,installed,memory?.templates[incoming.id]);if(data.initialSnapshot)assertNativeCaseSnapshot(data.initialSnapshot);
@@ -142,6 +144,7 @@ export class CaseService {
    ui.notifications.info(`${data.title}: ${physical.npcs.length} NPC, ${physical.scenePlans.length} scén a neveřejná příprava.`);ui.controls.render({force:true});
   });}finally{this.busy=false;}
  }
+ async updateDialog(caseId=this.selectedId){this.gm();assertCaseAvailable(caseId);if(!this.forCase(caseId))throw new Error('Vyber importovaný případ.');const form=await this.controls.promptForm('Vybrat novější ZIP případu',`<p><strong>${esc(this.forCase(caseId).title)}</strong></p><p>Po ověření balíčku uvidíš verze a rozsah změn před potvrzením.</p><label>ZIP případu<input type="file" name="caseFile" accept=".zip,application/zip" required></label>`,{label:'Ověřit ZIP',position:{width:700}});if(form)return updateCaseZip(this,caseId,form.get('caseFile'));}
  async repair(){if(!this.data)throw new Error('Nejdřív importuj přípravu.');return this.install(this.data);}
  installNpcPortraits(caseId=this.selectedId){return installCaseNpcPortraits(this,caseId);}
  async showEditor(){return game.pms.openCaseEditor();}

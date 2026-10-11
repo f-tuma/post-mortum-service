@@ -1,6 +1,7 @@
 import { applyBoardCommand, emptyBoard } from "./board-state.mjs";
 import {clueArchiveStatus} from './sheet-ui.mjs';
 import {clientCanWrite,electedPMSAuthority} from './gm-authority.mjs';
+import {caseRemoved,assertCaseAvailable} from './case-lifecycle.mjs';
 
 export const NS = "pms";
 const isKind = (doc, kind) => doc.getFlag(NS, "kind") === kind;
@@ -13,21 +14,22 @@ export class BoardService {
   get document() { return this.boardForCase(this.caseId); }
   selectCase(caseId=null) {
     const target=caseId??this.activeCaseId,doc=this.boardForCase(target);
+    assertCaseAvailable(target);
     if(!doc||!doc.testUserPermission(game.user,"OBSERVER"))throw new Error("Tabule tohoto případu zatím není dostupná.");
     this.selectedCaseId=caseId;
   }
   get state() { return this.document?.getFlag(NS, "board") ?? emptyBoard(); }
   get allEvidence() {
     const players=game.users.filter(u=>!u.isGM&&u.role>=1);
-    return game.items.filter(d=>d.type==="clue"&&clueArchiveStatus(d,this.caseId,players).available&&d.testUserPermission(game.user,"OBSERVER"))
+    return game.items.filter(d=>d.type==="clue"&&!caseRemoved(d.system.caseId)&&clueArchiveStatus(d,this.caseId,players).available&&d.testUserPermission(game.user,"OBSERVER"))
       .map(d=>({id:d.getFlag(NS,"evidenceId")??d.id,itemId:d.id,title:d.name,text:d.system.description,image:d.img.startsWith("icons/")?"":d.img,kind:d.system.medium==="photo"?"photo":"paper",medium:d.system.medium,published:true,sourceCase:d.system.caseId,sourceCaseLabel:game.pms?.avatars.state?.caseLabels?.[d.system.caseId]??game.folders.find(f=>f.type==='Actor'&&f.getFlag(NS,'caseBundle')===d.system.caseId)?.name??this.boardForCase(d.system.caseId)?.getFlag(NS,'board')?.title??'Další případ',sourceVisit:d.system.source,acquiredAt:d.system.acquiredAt,createdAt:d._stats?.createdTime}));
   }
   evidenceForCase(caseId) { return this.allEvidence.filter(e=>e.sourceCase===caseId); }
   get evidence() { return this.caseId ? this.evidenceForCase(this.caseId) : this.allEvidence; }
-  get archiveBoards() { return game.journal.filter(d=>isKind(d,"board")&&d.getFlag(NS,"caseId")&&d.testUserPermission(game.user,"OBSERVER")).map(d=>({caseId:d.getFlag(NS,"caseId"),title:d.getFlag(NS,"board")?.title??d.name})); }
+  get archiveBoards() { return game.journal.filter(d=>isKind(d,"board")&&d.getFlag(NS,"caseId")&&!caseRemoved(d.getFlag(NS,"caseId"))&&d.testUserPermission(game.user,"OBSERVER")).map(d=>({caseId:d.getFlag(NS,"caseId"),title:d.getFlag(NS,"board")?.title??d.name})); }
   get authority() { return electedPMSAuthority(game.users,game.journal); }
   get isAuthority() { return this.authority?.id === game.user.id && clientCanWrite(); }
-  get writable() { return Boolean(this.authority && (!game.user.isGM||this.isAuthority) && this.document?.testUserPermission(game.user,"OBSERVER")); }
+  get writable() { return Boolean(!caseRemoved(this.caseId)&&this.authority && (!game.user.isGM||this.isAuthority) && this.document?.testUserPermission(game.user,"OBSERVER")); }
   onChange(listener) { this.listeners.add(listener); return () => this.listeners.delete(listener); }
   notify() {
     for (const [requestId, waiting] of this.pending) {
@@ -67,6 +69,7 @@ export class BoardService {
     const doc=this.boardById(command.boardId);
     if (!this.isAuthority || !doc || !doc.testUserPermission(user,"OBSERVER")) return;
     const caseId=doc.getFlag(NS,"caseId")??"",evidence=caseId?this.evidenceForCase(caseId):this.allEvidence;
+    assertCaseAvailable(caseId);
     const { state, duplicate } = applyBoardCommand(doc.getFlag(NS,"board")??emptyBoard(), command, { id: user.id, canEdit: user.role >= CONST.USER_ROLES.PLAYER }, evidence);
     if (!duplicate) await doc.setFlag(NS, "board", state);
     this.notify();

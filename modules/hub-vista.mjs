@@ -4,6 +4,7 @@ import {HubParallax,HubPresence,hubCamera,hubConstrainView,HUB_BACKGROUND_DEPTH}
 import {HubPanEasing} from './hub-pan.mjs';
 import {publicOfferProfile} from './case-catalog.mjs';
 import {presentScene} from './scene-transition.mjs';
+import {caseRemoved} from './case-lifecycle.mjs';
 
 export const HUB_ACTIONS={cases:{label:'Případy',icon:'book-open'},mhd:{label:'MHD',icon:'train-subway'},archive:{label:'Archiv',icon:'boxes-stacked'},board:{label:'Tabule',icon:'thumbtack'}};
 export const HUB_LEVEL='pmsHubGround0001';
@@ -141,6 +142,7 @@ export class HubVistaService {
  }
  async publishOffer(data,{update=false}={}){
   if(!game.pms?.visits.isAuthority)throw new Error('Pověření vydává hlavní okno vypravěče.');
+  if(caseRemoved(data.id))return null;
   const existing=game.journal.find(d=>d.getFlag('pms','kind')==='caseOffer'&&d.getFlag('pms','caseId')===data.id);
   if(existing){if(update||existing.getFlag('pms','offerVersion')!==data.contentVersion){const offer=publicCaseOffer(data);await existing.update({name:offer.name,ownership:offer.ownership,'flags.pms.offerProfile':publicOfferProfile(data)});const pages=offer.pages.map((p,i)=>({...p,_id:existing.pages.contents[i]?.id}));for(const p of pages){if(p._id)await existing.updateEmbeddedDocuments('JournalEntryPage',[p]);else await existing.createEmbeddedDocuments('JournalEntryPage',[p]);}await existing.setFlag('pms','offerVersion',data.contentVersion);}else if(!existing.getFlag('pms','offerProfile'))await existing.setFlag('pms','offerProfile',publicOfferProfile(data));return existing;}return JournalEntry.create({...publicCaseOffer(data),folder:game.pms?.catalog?.guide?.folder?.id??null});
  }

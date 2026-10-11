@@ -17,7 +17,7 @@ class HubMenuApplication extends foundry.applications.api.ApplicationV2{
  filter(){const items=[...this.element.querySelectorAll('[data-search]')],query=searchable(this.view.search);for(const item of items)item.hidden=!!query&&!searchable(item.dataset.search).includes(query);
   const empty=this.element.querySelector('.hub-search-empty');if(empty){if(query)empty.textContent='Žádný záznam neodpovídá hledání.';empty.hidden=items.some(i=>!i.hidden)||(!query&&items.length>0);}
  }
- async run(fn){this.busy=true;this.view.error='';try{await fn();}catch(error){this.view.error=error.message;ui.notifications.warn(error.message);}finally{this.busy=false;if(this.rendered)this.render({force:true});}}
+ async run(fn){if(this.busy)return;this.busy=true;this.view.error='';try{await fn();}catch(error){this.view.error=error.message;ui.notifications.warn(error.message);}finally{this.busy=false;if(this.rendered)this.render({force:true});}}
  async action(command,value){if(command==='close')return this.close();if(command==='tab'){this.view.tab=value;this.view.search='';return;}
   if(command==='brief'){const offer=this.service.offers.find(o=>o.id===value);return offer?.document.sheet.render({force:true});}
  }
@@ -26,8 +26,12 @@ class HubMenuApplication extends foundry.applications.api.ApplicationV2{
 export class CaseCatalogApplication extends HubMenuApplication{
  static DEFAULT_OPTIONS={id:'pms-case-catalog',window:{title:'Recepce · pověření'}};
  constructor(service){super(service);this.view.ownerIds=[...service.avatars.eligibleOwnerIds];this.view.caseIds=service.newOffers.map(o=>o.caseId);}
- markup(){this.view.activeVisit=game.pms.visits.state?.status==='active';return catalogMarkup(this.service,this.view,game.users.contents,game.user);}
+ markup(){this.view.activeVisit=game.pms.visits.state?.status==='active';this.view.preparing=game.pms.avatars.state?.preparation?.status==='preparing';return catalogMarkup(this.service,this.view,game.users.contents,game.user);}
  async action(command,value){
+  if(['trash','restore','remove'].includes(command))return game.pms.caseLifecycle?.dialog(command,value);
+  if(command==='updateCase')return game.pms.cases.updateDialog(value);
+  if(command==='editCase'){await game.pms.caseEditor.open(value);return this.close();}
+  if(command==='tab'&&['manage','trash'].includes(value)&&!game.user.isGM)throw new Error('Správa případů patří vypravěči.');
   if(command==='vote')return this.service.vote(value);if(command==='withdraw')return this.service.vote(null);
   if(command==='openVote')return this.service.openBallot(this.view.ownerIds,this.view.caseIds);
   if(command==='confirm')return this.service.confirm(value);if(command==='cancel')return this.service.cancel();

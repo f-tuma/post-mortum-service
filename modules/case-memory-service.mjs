@@ -1,5 +1,6 @@
 import {createCaseMemory,validateCaseMemory,rememberRealResult,discardReflection,recordRealReport} from './case-memory.mjs';
 import {captureCaseSnapshot,seedLegacyTemplate,restoreCaseSnapshot,assertNativeCaseSnapshot} from './case-snapshot.mjs';
+import {caseRemoved} from './case-lifecycle.mjs';
 export class CaseMemoryService {
   constructor(avatars,visits,cases){this.avatars=avatars;this.visits=visits;this.cases=cases;}
   gm(){if(!game.user.isGM||!this.avatars.isAuthority)throw new Error('Paměť případu spravuje hlavní připojený vypravěč.');}
@@ -44,6 +45,7 @@ export class CaseMemoryService {
   finishReturn(visit){
     if(!visit?.caseId||visit.status!=='returned')return Promise.resolve(visit);
     return this.serial(async()=>{
+      if(caseRemoved(visit.caseId)||this.avatars.state?.deletedVisitIds?.includes(visit.id))return visit;
       let memory=await this.read();
       if(visit.mode==='real'){
         if(!memory.returns[visit.id]){

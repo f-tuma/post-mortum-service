@@ -1,5 +1,6 @@
 import {introductionComplete} from './hub-ballot.mjs';
 import {sectorGuideData,archiveGuideUpdates} from './sector-guide.mjs';
+import {caseRemoved} from './case-lifecycle.mjs';
 export const safeCover=value=>typeof value==='string'&&!value.includes('..')&&/^(?:systems\/|worlds\/|icons\/|https?:\/\/)[^<>"'\\\s]+\.(?:png|webp|jpe?g|svg)$/i.test(value)?value:'systems/pms/assets/hub/sector-exterior-v2.png';
 export function publicOfferProfile(data){return {setting:String(data.avatarCatalog.setting).slice(0,160),duration:Number.isFinite(data.end-data.start)?Math.max(0,data.end-data.start):0,
  teaser:data.id==='tetove'?'Rod barona z Tétů provází neštěstí. Smrt nejstaršího syna je poslední ranou. Náhoda, nebo souvislost, kterou zatím nikdo nevidí?':String(data.intro).slice(0,500),
@@ -11,10 +12,11 @@ export class CaseCatalogService{
  onChange(fn){this.listeners.add(fn);return()=>this.listeners.delete(fn);}
  notify(){for(const fn of this.listeners)fn();}
  get state(){return this.avatars.state;}
+ get managementCases(){return game.user.isGM?game.pms?.caseLifecycle?.entries??[]:[];}
  get guide(){return game.journal.find(d=>d.getFlag('pms','kind')==='sectorGuide'&&d.testUserPermission(game.user,'OBSERVER'));}
  get offers(){
   const players=this.avatars.eligibleOwnerIds.map(id=>game.users.get(id));
-  return game.journal.filter(d=>d.getFlag('pms','kind')==='caseOffer'&&d.testUserPermission(game.user,'OBSERVER')&&(d.ownership?.default??0)>=2&&players.every(u=>d.testUserPermission(u,'OBSERVER')))
+  return game.journal.filter(d=>d.getFlag('pms','kind')==='caseOffer'&&!caseRemoved(d.getFlag('pms','caseId'))&&d.testUserPermission(game.user,'OBSERVER')&&(d.ownership?.default??0)>=2&&players.every(u=>d.testUserPermission(u,'OBSERVER')))
    .map(document=>{const p=document.getFlag('pms','offerProfile')??{},caseId=document.getFlag('pms','caseId'),visited=(this.state?.caseVisits??[]).some(v=>v.caseId===caseId&&v.mode==='real');
     return {id:document.id,caseId,title:document.name,document,setting:String(p.setting??'Jiná realita').slice(0,160),teaser:String(p.teaser??'Otevřete pověření pro zadání tohoto případu.').slice(0,500),duration:Number.isFinite(p.duration)?p.duration:0,cover:safeCover(p.cover),visited};});
  }

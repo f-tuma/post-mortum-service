@@ -2,7 +2,7 @@
 export const HUB_COMMANDS=['hubOpenBallot','hubVote','hubConfirmBallot','hubCancelBallot'];
 const fail=m=>{throw new Error(m);};
 const id=v=>typeof v==='string'&&/^[\w-]{1,64}$/.test(v)&&!Object.hasOwn(Object.prototype,v)?v:fail('Neplatný identifikátor hlasování.');
-export const introductionComplete=campaign=>(campaign?.caseVisits??[]).some(v=>v.caseId==='tetove'&&v.mode==='real'&&v.status==='returned');
+export const introductionComplete=campaign=>Boolean(campaign?.introductionCompleted||(campaign?.caseVisits??[]).some(v=>v.caseId==='tetove'&&v.mode==='real'&&v.status==='returned'));
 export function ballotCounts(ballot){return Object.fromEntries((ballot?.caseIds??[]).map(caseId=>[caseId,Object.values(ballot.votes??{}).filter(v=>v===caseId).length]));}
 export function applyHubBallot(state,command,user,{eligibleOwnerIds=[],offeredCaseIds=[]}={}){
  const gm=()=>{if(!user.isGM)fail('Hlasování připravuje vypravěč.');};

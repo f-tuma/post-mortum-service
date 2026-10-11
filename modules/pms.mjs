@@ -20,6 +20,7 @@ import {CaseCatalogApplication,SectorArchiveApplication} from './hub-menu-app.mj
 import {registerActionChatHooks,refreshActionChat} from './action-chat.mjs';
 import {CaseEditorService} from './case-editor-service.mjs';
 import {CaseEditorApplication} from './case-editor-app.mjs';
+import {CaseLifecycleService} from './case-lifecycle.mjs';
 import {registerSoulTokenHooks} from './soul-token.mjs';
 import {NpcTokenService,registerNpcTokenHooks} from './npc-token-service.mjs';
 
@@ -73,6 +74,7 @@ Hooks.once("ready", async () => {
   const catalog=new CaseCatalogService(avatars),caseCatalog=new CaseCatalogApplication(catalog);
   game.pms = { service, board, visits, visit, timeline, cases, caseMenu, hub, avatars, avatarWizard, rewards, rewardCard, memory, openHub:()=>hub.enter().catch(error=>ui.notifications.warn(error.message)), openRewards:()=>{if(game.user.isGM)return rewardCard.render({force:true});}, openAvatarCreation:()=>avatarWizard.render({force:true}), openBoard: options => board.openCase(options).catch(error=>ui.notifications.warn(error.message)), openTimeline: () => {if(!game.user.isGM)return;return timeline.render({force:true});} };
   Object.assign(game.pms,{npcTokens,catalog,caseCatalog,sectorArchive:new SectorArchiveApplication(catalog),openSectorArchive:()=>game.pms.sectorArchive.render({force:true})});
+  if(game.user.isGM)game.pms.caseLifecycle=new CaseLifecycleService(cases);
   await npcTokens.syncAll();
   if(game.user.isGM){const editorService=new CaseEditorService(cases),caseEditor=new CaseEditorApplication(editorService);Object.assign(game.pms,{editorService,caseEditor,openCaseEditor:()=>caseEditor.open().catch(e=>ui.notifications.warn(e.message))});}
   visits.onReturnReady=state=>hub.returnFromVisit(state);

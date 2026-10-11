@@ -10,6 +10,8 @@ export class CaseMenu extends foundry.applications.ux.ContextMenu {
       entry('Skutečný výsledek','book-bookmark','showResult','Výprava'),
       entry('Připravit odjezd v MHD','train-subway','start','Výprava'),
       entry('Importovat případ…','file-import','importDialog','Správa'),
+      {label:'Správa případů a koš',icon:'fa-solid fa-trash-can',group:'Správa',onClick:()=>{game.pms.caseCatalog.view.tab='manage';game.pms.caseCatalog.view.search='';return game.pms.caseCatalog.render({force:true});}},
+      entry('Aktualizovat případ ze ZIPu','file-arrow-up','updateDialog','Správa'),
       entry('Obnovit scény a mapy','layer-group','repair','Správa')
     ],{fixed:true,relative:'target',jQuery:false});
   }

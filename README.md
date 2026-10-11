@@ -2,7 +2,7 @@
 
 Vyšetřovací TTRPG systém pro Foundry VTT 14. Výpravy vstupují do samostatných realit, sbírají vodítka a skládají případy na společné tabuli důkazů. MHD uzavírá návštěvy; odrazy umožňují návraty bez změny skutečného výsledku.
 
-Aktuální verze: **0.13.4**, testovaná s Foundry **14.368**. Jde o verzi pro společné testování.
+Aktuální verze: **0.13.6**, testovaná s Foundry **14.368**. Jde o verzi pro společné testování.
 
 ## Instalace přes manifest
 
@@ -29,6 +29,16 @@ Na kartě případu v **Recepci → Pověření** klikni jako GM na **Příprava
 
 Prohlídka map změní pouze pohled vypravěče; neaktivuje scénu hráčům a nespustí výpravu. Seznam se ukládá zvlášť pro každý účet a svět v tomto prohlížeči. Změna kapitoly nebo výchozí mapy znovu otevře příslušný krok. Stručné souhrny upravíš v **Editoru případů → Případ**; přenášejí se spolu s případem, stav odškrtávání zůstává místní.
 
+## Správa případů, aktualizace a koš
+
+V **Recepci → Pověření → Správa případů** najde vypravěč všechny importované případy včetně pracovních návrhů. Stejnou nabídku otevře **Podklady a příprava → Správa případů a koš** nebo tlačítko v editoru.
+
+- **Aktualizovat ze ZIPu** ověří stejný identifikátor a novější vydání, ukáže verze a rozsah změn před potvrzením. Nahradí autorský návrh a výchozí scény/NPC. Vlastní autorské úpravy si nejdřív exportuj; skutečný výsledek, zaplacené sestavy, nálezy, tabule, energie a odměny zůstanou uložené. Aktualizovaný začátek se použije při dalším odjezdu.
+- **Odebrat do koše** skryje případ z pověření, archivu a hráčské navigace. Záznamy a přístupy zůstanou uložené pro obnovu; související hlasování se zruší.
+- V záložce **Koš** můžeš případ **Obnovit** nebo **Smazat natrvalo**. Smazání vyžaduje jeho identifikátor a ukáže dotčené dokumenty. Odstraní také uložený výsledek, svět a sestavy případu; získaná energie, odměnová historie a odemčený úvod služby zůstanou zachované. Obrázky a zvuky na disku zůstanou kvůli možnému sdílení. Potřebuješ-li zálohu, nejdřív případ obnov a exportuj ZIP.
+
+Změny provádí hlavní vypravěč mezi výpravami a mimo tvorbu Avatarů. Trvalé mazání se zastaví, pokud postavy nebo deníky používá jiná scéna. Selhané mazání zůstane v koši jako rozpracované a lze jej dokončit po obnovení spojení.
+
 ## Přenos vlastního případu
 
 1. V **Editoru případů → Výchozí svět** ulož scény a NPC do počátečního stavu tlačítkem **Uložit aktuální svět jako začátek**.
@@ -51,7 +61,7 @@ Volba **Aktualizovat jen příručku** přenese pouze její obsah a použité so
 
 Tento repozitář obsahuje distribuovanou část systému. Pracovní podklady a testovací světy nejsou jeho součástí.
 
-Po změně verze v `system.json` vytvoř odpovídající Git tag, například `v0.13.4`. Workflow ověří verzi, sestaví `pms.zip`, `system.json`, `tetove.json` a kontrolní součty, nahraje je do návrhu vydání a po dokončení uploadu jej zveřejní.
+Po změně verze v `system.json` vytvoř odpovídající Git tag, například `v0.13.6`. Workflow ověří verzi, sestaví `pms.zip`, `system.json`, `tetove.json` a kontrolní součty, nahraje je do návrhu vydání a po dokončení uploadu jej zveřejní.
 
 Lokální sestavení z kořene tohoto repozitáře:
 

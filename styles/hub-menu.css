@@ -16,7 +16,7 @@
 .hub-menu-energy strong{font-size:25px;color:var(--pms-sage)}
 .hub-menu-body{display:flex;flex:1;min-height:0;overflow:hidden}
 .hub-catalog-main,.hub-library-main{flex:1;min-width:0;overflow:auto;padding:24px 30px;scrollbar-width:thin;scrollbar-color:#82735d transparent;overscroll-behavior:contain}
-.hub-menu-tabs{display:flex;gap:8px;margin-bottom:16px}
+.hub-menu-tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
 .hub-menu button[aria-pressed=true]{background:#365349;border-color:#a5c6b2;color:#f3ead8}
 .hub-menu-search{display:flex;align-items:center;gap:12px;background:#101c26;border:1px solid #82735d88;padding:7px 14px;min-height:44px}
 .hub-menu-search input{border:0;background:transparent;height:30px;color:var(--pms-ink);padding:0;width:100%;font-size:15px;box-shadow:none}
@@ -89,3 +89,13 @@
 @media(max-width:1000px){.hub-case-dossier{grid-template-columns:150px minmax(0,1fr);gap:20px;padding:20px}.hub-case-dossier h2{font-size:26px}}
 @media(max-width:760px){.hub-case-dossier{grid-template-columns:110px minmax(0,1fr);gap:16px;padding:16px}.hub-case-dossier>img{height:155px}.hub-archive-breadcrumb{flex-wrap:wrap}}
 @media(min-width:1000px) and (max-height:850px){.hub-archive-breadcrumb{margin:14px 0}.hub-case-dossier{padding:18px;gap:22px;grid-template-columns:165px minmax(0,1fr)}.hub-case-dossier>img{height:125px}.hub-case-dossier h2{font-size:26px;margin:8px 0 10px}.hub-case-dossier p{font-size:13px;margin-bottom:12px}.hub-case-dossier .hub-card-actions{margin-top:0}.hub-clue-heading{margin-top:20px}.hub-clue-heading+.hub-library-grid{margin-top:16px}.hub-clue-heading+.hub-library-grid .hub-library-entry{padding:20px}.hub-clue-heading+.hub-library-grid .hub-entry-icon{margin-bottom:12px}}
+
+/* Case administration uses the full native application width. */
+.hub-case-management .hub-case-grid{grid-template-columns:repeat(auto-fill,minmax(min(100%,340px),1fr))}
+.hub-case-management .hub-case-grid:has(>.hub-case-card:only-child){grid-template-columns:min(100%,780px)}
+.hub-management-card .hub-case-art{height:175px}
+.hub-management-card .hub-case-copy h2{font-size:26px;overflow-wrap:anywhere}
+.hub-management-card .hub-card-actions{margin-top:20px}
+.hub-management-card .hub-card-actions button{flex:1 1 145px}
+.hub-menu button.hub-danger{border-color:#ba81716b;color:#e3b6a5;background:#392b30}
+.hub-menu button.hub-danger:hover:not(:disabled){background:#50343a;border-color:#d19782}
