@@ -1,0 +1,30 @@
+.pms-hub-vista {position:fixed;inset:0;z-index:10;pointer-events:none;overflow:hidden;}
+.pms-hub-vista .pms-hub-hit {position:absolute;pointer-events:auto;background:transparent;border:1px solid transparent;border-radius:8px;padding:0;box-shadow:none;color:#ede5d3;cursor:pointer;transition:background-color .18s,border-color .18s,box-shadow .18s;}
+.pms-hub-vista .pms-hub-hit.is-active {background:linear-gradient(0deg,#c4bb9c12,transparent 65%);border-color:#d2c7a642;box-shadow:inset 0 0 30px #b7ccbd12;outline:2px solid #d2c7a688;outline-offset:4px;}
+.pms-hub-hit-label {position:absolute;bottom:0;left:50%;transform:translate(-50%,45%);display:grid;grid-template-columns:24px minmax(0,1fr);gap:2px 8px;width:240px;max-width:calc(100vw - 32px);padding:12px 20px;background:#111b2bef;border:1px solid #b5a17e60;border-radius:3px;box-shadow:0 8px 24px #0006;text-align:left;}
+.pms-hub-hit-label i {grid-row:span 2;align-self:center;text-align:center;color:#bfb19a;}
+.pms-hub-hit-label b {font:500 21px/1.1 Georgia,serif;letter-spacing:.03em;}
+.pms-hub-hit-label small {font:12px/1.35 var(--font-primary,sans-serif);color:#b5c2cc;opacity:0;max-height:0;overflow:hidden;transition:max-height .18s,opacity .18s;}
+.pms-hub-hit.is-active small {opacity:1;max-height:80px;}
+.pms-hub-caption {position:absolute;bottom:18px;left:50%;transform:translateX(-50%);padding:10px 24px;text-align:center;color:#d9d8dc;border-top:1px solid #b8a57b70;background:linear-gradient(90deg,transparent,#101726cf 15%,#101726cf 85%,transparent);min-width:280px;}
+.pms-hub-caption>span {font:20px Georgia,serif;letter-spacing:.12em;}
+.pms-hub-caption p {margin:4px 0;font-size:12px;color:#b2bdca;}
+.pms-hub-caption strong {display:block;font-size:13px;font-weight:500;color:#b8c9c2;}
+@media (prefers-reduced-motion:reduce) {.pms-hub-hit,.pms-hub-hit-label small {transition:none!important;}}
+@media (max-width:900px) {.pms-hub-hit-label {width:180px;padding:9px 12px;}.pms-hub-hit-label b {font-size:17px;}.pms-hub-hit-label small {display:none;}.pms-hub-caption {bottom:10px;}}
+/* The vista is still the native Scene; these are its small interaction labels. */
+body.pms-hub-immersive :is(#interface #ui-left,#interface #ui-right,#interface #ui-top,#interface #ui-bottom,#pause,#scene-navigation,#controls,#hotbar,#players,#sidebar,#fps),
+body.pms-hub-immersive :is(#interface #ui-left,#interface #ui-right,#interface #ui-top,#interface #ui-bottom,#pause,#scene-navigation,#controls,#hotbar,#players,#sidebar,#fps) * {visibility:hidden!important;pointer-events:none!important;}
+body.pms-hub-immersive #board {inset:0;width:100vw!important;height:100vh!important;}
+.pms-hub-tools {position:absolute;top:20px;right:24px;pointer-events:auto;}
+.pms-hub-tools button {display:flex;gap:10px;align-items:center;padding:10px 16px;min-height:40px;width:auto;background:#111b2beb;border:1px solid #b5a17e60;color:#ded5c2;border-radius:4px;font:14px var(--font-primary,sans-serif);}
+.pms-hub-tools button i {width:18px;text-align:center;color:#b5a17e;}
+.pms-hub-tools button:hover,.pms-hub-tools button:focus-visible {background:#243449;outline:1px solid #d2c7a6;}
+body:not(.pms-hub-immersive) .pms-hub-caption {display:none;}
+.pms-hub-hit.is-active {outline:1px solid #d2c7a645;border-color:transparent;background:linear-gradient(0deg,#c4bb9c0d,transparent 60%);box-shadow:none;}
+.pms-hub-hit-label {bottom:-4px;}
+@media (max-width:900px) {.pms-hub-tools {top:12px;right:16px;}.pms-hub-tools button {font-size:12px;}}
+
+/* Pointer interaction belongs to the real canvas, including native right-drag pan. */
+.pms-hub-vista .pms-hub-hit {pointer-events:none;}
+.pms-hub-vista.is-native-tools .pms-hub-tools {top:auto;right:auto;left:50%;bottom:100px;transform:translateX(-50%);}

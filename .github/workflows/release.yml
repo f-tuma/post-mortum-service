@@ -1,0 +1,43 @@
+name: Foundry system release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Checkout tagged system
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Check JavaScript syntax
+        run: |
+          for PMS_MODULE in modules/*.mjs; do
+            node --check "$PMS_MODULE"
+          done
+
+      - name: Build and validate release assets
+        run: python3 scripts/build-release.py --repo "$GITHUB_REPOSITORY" --tag "$GITHUB_REF_NAME" --output dist/release
+
+      - name: Create draft release
+        run: |
+          gh release create "$GITHUB_REF_NAME" --verify-tag --draft \
+            --title "PMS $GITHUB_REF_NAME" \
+            --notes "Testovací verze Popohřební služby pro Foundry VTT 14. Instalace přes stabilní manifest je popsaná v README; tetove.json obsahuje výchozí přípravu úvodního případu."
+
+      - name: Upload complete release
+        run: gh release upload "$GITHUB_REF_NAME" dist/release/pms.zip dist/release/system.json dist/release/tetove.json dist/release/SHA256SUMS.txt
+
+      - name: Publish installable release
+        run: gh release edit "$GITHUB_REF_NAME" --draft=false --latest

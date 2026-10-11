@@ -1,0 +1,6 @@
+{
+  "TYPES.Actor.avatar": "Avatar",
+  "TYPES.Actor.npc": "NPC",
+  "TYPES.Item.supply": "Supply",
+  "TYPES.Item.clue": "Clue"
+}

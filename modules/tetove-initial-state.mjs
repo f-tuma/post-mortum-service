@@ -1,0 +1,4 @@
+/** Explicit starts for state formerly introduced only when timed events fired. */
+export const TETOVE_EVENT_START={audienceDone:false,auditRunning:false,archiveServiceOpen:false,terezaPlace:'away',meetingRunning:false,meetingCompleted:false,copy242Exists:false,falseRosterIssued:false,raining:false,attackStarted:false,backupStarted:false};
+export const TETOVE_EVENT_FIELDS=Object.entries({audienceDone:'Přijetí u barona dokončeno',auditRunning:'Probíhá kontrola cechu',archiveServiceOpen:'Služební vstup do archivu otevřen',meetingRunning:'Probíhá porada',meetingCompleted:'Porada dokončena',copy242Exists:'Průpis 242 existuje',falseRosterIssued:'Falešný rozpis vydán',raining:'Prší',attackStarted:'Hlavní útok začal',backupStarted:'Záložní útok začal'}).map(([key,label])=>({key,label}));
+TETOVE_EVENT_FIELDS.push({key:'terezaPlace',label:'Skutečné místo Terezy',choices:{guild:'Cech',road:'Na cestě',curve:'Havraní zákrut',away:'Mimo okolí'}});

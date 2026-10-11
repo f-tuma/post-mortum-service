@@ -1,0 +1,7 @@
+{
+  "TYPES.Actor.avatar": "Avatar",
+  "TYPES.Actor.npc": "Postava případu",
+  "TYPES.Item.supply": "Zásoba",
+  "TYPES.Item.clue": "Vodítko",
+  "PMS": { "openBoard": "Otevřít tabuli", "board": "Tabule důkazů", "archive": "Archiv" }
+}

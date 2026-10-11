@@ -1,0 +1,36 @@
+/* Scoped chrome shared by native Foundry windows. Never changes the canvas controls globally. */
+.pms-app,.pms-timeline,.pms-flow-dialog { --pms-paper:#f6f1e6;--pms-ink:#243344;--pms-rule:#c1b197;--pms-navy:#25333d; }
+.pms-shell button,.pms-flow-dialog button { display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:34px;font:14px/1.25 "Signika",sans-serif; }
+.pms-shell button i,.pms-flow-dialog button i { display:inline-flex;align-items:center;justify-content:center;width:16px;min-width:16px;height:16px;margin:0;line-height:1;font-size:14px; }
+.pms-app .pms-header { grid-template-columns:180px minmax(0,1fr) 145px;gap:18px;height:58px; }
+.pms-app .pms-header h1 { overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:25px; }
+.pms-shell .pms-brand { font-size:18px; }
+.pms-shell .pms-toolbar button { min-height:36px; }
+.pms-shell .pms-source-title { font:600 17px/1.3 Georgia,serif;justify-content:flex-start; }
+.pms-archive-entry { align-items:center;gap:12px; }
+.pms-archive-entry>div:last-child { gap:9px; }
+.pms-archive-heading h2 { font-size:32px; }
+.pms-archive footer p { display:flex;align-items:flex-start;gap:8px; }
+.pms-archive footer p i { margin:2px 0 0; }
+.pms-shell .pms-pin { display:block;min-height:0; }
+.pms-shell .pms-card-tools button { min-height:28px; }
+.pms-app .window-header,.pms-timeline .window-header,.pms-flow-dialog .window-header { padding-inline:14px;min-height:36px;background:var(--pms-navy);color:var(--pms-paper); }
+
+.pms-flow-dialog { border:1px solid var(--pms-rule);color:var(--pms-ink);font:14px/1.45 "Signika",sans-serif; }
+.pms-flow-dialog .window-content { background:var(--pms-paper);color:var(--pms-ink);padding:18px 22px; }
+.pms-flow-dialog .pms-visit-dialog { color:var(--pms-ink);padding:0 4px; }
+.pms-flow-dialog .pms-visit-dialog>label { margin:14px 0; }
+.pms-flow-dialog .pms-visit-dialog input,.pms-flow-dialog .pms-visit-dialog select,.pms-flow-dialog .pms-visit-dialog textarea { border-color:var(--pms-rule);background:#fffaf2;color:var(--pms-ink);font:14px/1.4 "Signika",sans-serif;padding:8px 10px;min-height:36px; }
+.pms-flow-dialog .pms-visit-dialog input[type="checkbox"] { width:18px;min-height:18px;height:18px;accent-color:#527d80; }
+.pms-flow-dialog .pms-checkbox { min-height:32px;padding:5px 0;border-bottom:1px solid #e0d7c7;gap:10px;line-height:1.35; }
+.pms-flow-dialog .dialog-buttons { gap:10px;margin-top:16px; }
+.pms-flow-dialog [data-action="save"] { background:var(--pms-navy);color:var(--pms-paper); }
+#context-menu.pms-case-menu { min-width:270px;border:1px solid #9f9076;border-radius:4px;background:#f6f1e6;color:#243344;font:14px/1.35 "Signika",sans-serif;box-shadow:0 8px 26px #15232c40; }
+#context-menu.pms-case-menu .context-items { padding:8px; }
+#context-menu.pms-case-menu .context-group { padding:6px 0;border-top:1px solid #d4c9b4; }
+#context-menu.pms-case-menu .context-group::before { content:attr(data-group-id);display:block;padding:6px 10px;color:#776b58;font-size:12px; }
+#context-menu.pms-case-menu .context-item { display:flex;align-items:center;gap:12px;min-height:38px;padding:9px 12px;color:#243344; }
+#context-menu.pms-case-menu .context-item i { width:18px;min-width:18px;font-size:15px;line-height:1;text-align:center; }
+#context-menu.pms-case-menu .context-item:hover,#context-menu.pms-case-menu .context-item:focus { color:#243344;background:#e5e7de; }
+@media(max-width:1000px){.pms-app .pms-header{grid-template-columns:32px minmax(0,1fr) 130px;}.pms-app .pms-brand span{display:none;}}
+@media(prefers-reduced-motion:reduce){.pms-app *,.pms-timeline *,.pms-flow-dialog *{scroll-behavior:auto;}}
