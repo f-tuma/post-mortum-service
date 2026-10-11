@@ -32,6 +32,7 @@ export class CaseCatalogApplication extends HubMenuApplication{
   if(command==='openVote')return this.service.openBallot(this.view.ownerIds,this.view.caseIds);
   if(command==='confirm')return this.service.confirm(value);if(command==='cancel')return this.service.cancel();
   if(command==='import')return game.pms.cases.importDialog();
+  if(command==='gmPreparation'){await game.pms.cases.showPreparation({caseId:value});return this.close();}
   if(command==='prepare'){await this.service.prepare(value);return this.close();}
   return super.action(command,value);
  }

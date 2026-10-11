@@ -5,6 +5,7 @@ import {caseRewards} from './reward-catalog.mjs';
 import {upgradeLegacyCase} from './tetove-compat.mjs';
 import {validateLoopDefinition,definitionId} from './case-definition.mjs';
 import {avatarCatalog} from './avatar-catalog.mjs';
+import {validatePreparation} from './case-preparation.mjs';
 export function validateCase(data){
  if(data?.format!=='pms-case'||![1,2].includes(data.version))throw new Error('Neznámý formát případu.');
  data=data.version===1?upgradeLegacyCase(data):structuredClone(data);definitionId(data.id);
@@ -12,6 +13,7 @@ export function validateCase(data){
  for(const key of ['npcs','clues','events'])if(new Set(data[key].map(x=>x.id)).size!==data[key].length)throw new Error('Duplicitní identifikátor přípravy.');
  const string=(v,max)=>{if(typeof v!=='string'||v.length>max)throw new Error('Neplatný text přípravy.');};
  string(data.title,160);string(data.intro,2000);
+ validatePreparation(data.preparation);
  for(const n of data.npcs){definitionId(n.id);string(n.name,160);string(n.role,160);string(n.biography,2000);if(n.img!==undefined){string(n.img,2000);if(n.img.includes('..')||n.img.includes('\\')||(/^[a-z]+:/i.test(n.img)&&!/^https?:\/\//i.test(n.img)))throw new Error('Neplatná cesta portrétu NPC.');}}
  for(const c of data.clues){definitionId(c.id);string(c.name,160);string(c.description,15000);string(c.source,160);if(!['paper','object','testimony','photo'].includes(c.medium))throw new Error('Neplatné médium.');}
  if(data.guidePages!==undefined)buildCaseGuide(data);
@@ -31,5 +33,6 @@ export function withUpdatedGuide(installed, raw){
  if(!update.guidePages)throw new Error('Soubor neobsahuje nově členěnou příručku.');
  if(installed.id!==update.id)throw new Error('Příručka patří jinému případu.');
  return {...structuredClone(installed),guide:update.guide,guidePages:update.guidePages,
+  ...(update.preparation!==undefined?{preparation:update.preparation}:{}),
   guideSourceVersions:update.sourceVersions??[]};
 }

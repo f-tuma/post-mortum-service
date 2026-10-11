@@ -23,6 +23,12 @@ Import vytvoří 9 NPC, 20 vodítek, 30 časových událostí a scény s gridem,
 
 Případ obsahuje informace pro vypravěče včetně řešení záhady. Při aktualizaci rozehraného případu můžeš zvolit pouze aktualizaci příručky.
 
+## Příprava na sezení
+
+Na kartě případu v **Recepci → Pověření** klikni jako GM na **Příprava pro Vypravěče**. Nativní příručka obsahuje stručný souhrn záhady, důležité dějové situace, seznam přípravy, kapitoly k pročtení a odkazy na jednotlivá podlaží map a deníky NPC. Přípravu lze otevřít i před potvrzením společné volby případu.
+
+Prohlídka map změní pouze pohled vypravěče; neaktivuje scénu hráčům a nespustí výpravu. Seznam se ukládá zvlášť pro každý účet a svět v tomto prohlížeči. Změna kapitoly nebo výchozí mapy znovu otevře příslušný krok. Stručné souhrny upravíš v **Editoru případů → Případ**; přenášejí se spolu s případem, stav odškrtávání zůstává místní.
+
 ## Přenos vlastního případu
 
 1. V **Editoru případů → Výchozí svět** ulož scény a NPC do počátečního stavu tlačítkem **Uložit aktuální svět jako začátek**.

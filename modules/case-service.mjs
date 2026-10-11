@@ -17,6 +17,8 @@ import {readCaseFile,restorePackageAssets} from './case-package.mjs';
 import {nativeCaseAssetStorage,packageProgress} from './case-package-foundry.mjs';
 import {versionImportedCase} from './case-content-version.mjs';
 import {installCaseNpcPortraits} from './npc-art.mjs';
+import {buildPreparationPlan,preparationProgress,setPreparationTask,viewPreparationMap,preparationActor,PREPARATION_PAGES} from './case-preparation.mjs';
+import {preparationPages} from './case-preparation-view.mjs';
 const NS='pms';
 const marked=(d,key)=>d.getFlag(NS,key);
 export class PMSCaseJournal extends foundry.applications.sheets.journal.JournalEntrySheet {
@@ -26,21 +28,48 @@ export class PMSCaseJournal extends foundry.applications.sheets.journal.JournalE
   const data=game.user.isGM&&(options.caseData??(caseId?game.pms?.cases.forCase(caseId):game.pms?.cases.data));
   if(!data){super(options);return;}
   const markdown=new window.showdown.Converter({tables:true});
-  const pages=buildCaseGuide(data,value=>markdown.makeHtml(value)).map(({id,key,...page})=>({...page,text:{...page.text,content:foundry.utils.cleanHTML(page.text.content)}}));
-  const first=pages[0]?.flags.pms??{guideCategoryId:'pmsGuideGroup001',guideGroupName:'Začít zde',guideGroupOrder:0};
-  const help={_id:'pmsFoundryHelp01',name:'Ovládání ve Foundry',type:'text',sort:1500,category:first.guideCategoryId,ownership:{default:0},title:{show:true,level:1},text:{format:1,content:`<h2>Odjezd a deníky</h2><ul><li><strong>Připravit odjezd v MHD</strong> otevře společnou tvorbu Avatarů. Po potvrzení celé party vypravěč odešle výpravu do výchozí scény případu.</li><li>Hráči otevírají nativní deník postavy. Akci zadáš z deníku nebo časové osy; hráč v deníku připraví vitálky a potvrdí ji.</li></ul><h2>Vodítka a tabule</h2><ul><li><strong>Vodítka případu</strong> nabídnou připravené nálezy. Zveřejni jen skutečně získaná fakta a podle potřeby uprav text.</li><li><strong>Archiv</strong> otevře boční kartotéku se záložkami, hledáním a filtrem případu. Nativní předměty přetáhni na tabuli; poznámky a provázky doplní vaše teorie.</li><li><strong>Celá tabule</strong> ukáže rám pracovní plochy. <strong>Zobrazit vše</strong> přiblíží rozmístěné důkazy. Karta, se kterou hýbeš, je vždy navrchu; dvojklik do plochy přidá poznámku.</li><li><strong>Vlastní nález</strong> vytvoří další společný předmět. Připravená vodítka i výbavu lze otevřít v seznamu Items.</li></ul><h2>Čas a skutečný stav</h2><ul><li>Časová osa řadí události do dějových linií a pod ně akce party. Každá budoucí událost ukazuje, zda při současném stavu světa <strong>nastane</strong>, nebo <strong>nenastane</strong>. Kliknutím zvýrazníš, co ji podmiňuje a co ovlivňuje; v detailu můžeš rovnou přepnout skutečný stav. Tažením karty přesuneš budoucí událost, Ctrl + kolečko mění měřítko a tažením prázdné plochy se posouváš.</li><li><strong>Stav případu</strong> zapisuje provedené zásahy a skutečné polohy. Změna rozkazu sama nepotvrdí jeho doručení. Změna polohy v přehledu neposouvá token.</li><li>Urči svědky a vyřeš reakce pod časovou osou. Kontroly útoku nikoho automaticky nezabíjejí.</li></ul><h2>Rozluštění a energie</h2><ul><li><strong>Poznání</strong> na časové ose nebo <strong>Rozluštění a energie</strong> v přípravě otevře neveřejnou kartu. Vyber položku, zapiš vysvětlení hráčů a potvrď odměnu. Stejné poznání se napříč návštěvami vyplácí jednou.</li><li>Historie uchovává odměny a opravy. Omyl lze odebrat, pokud zásoba pokryje opravu; jinak jej zaznamenej a nejdřív oprav navazující nákup nebo zálohu.</li><li>Přeměna úlomku je samostatná: po skutečném návratu potvrď živého nosiče, převoz uzavřené schránky a dokončené předání zařízení v hubu. Odraz ji nevyplácí.</li></ul><h2>Návrat a odrazy</h2><ul><li>Skutečný průchod skončí vypršením okna nebo smrtí posledního Avatara. <strong>Skutečný výsledek</strong> v nabídce Podklady a příprava otevře soukromý nativní deník; zápis následků doplníš v jeho hlavičce.</li><li>Před odrazem otevři MHD v režimu <strong>Odraz</strong>. Hráči použijí své uložené Avatary a mohou změnit balíček nebo přeskládat již zaplacenou sílu. Všichni znovu potvrdí sestavu.</li><li>Odjezd obnoví začátek světa, NPC, dveře a události i plnou počáteční kondici a výbavu. Archiv, tabule, energie a již přiznaná poznání zůstávají. Nálezy mají uvedený průchod, ze kterého pocházejí.</li><li>Zásahy odrazu se při návratu zahodí; skutečný konec nepřepíšou. Pokud se odjezd přeruší, zopakuj jej. Hráči se uvolní až po dokončení celé přípravy.</li></ul><h2>Scény a podlaží</h2><ul><li>Tokeny, dveře, zdi a podlaží ovládej nativními nástroji Foundry.</li><li>Výchozí scéna a podlaží jsou součástí definice případu. Přesun po schodech může nabídnout změnu podlaží.</li></ul><h2>Najít a aktualizovat přípravu</h2><p>Levý obsah a hledání jsou nativní Foundry. Podnadpisy vedou přímo k potřebné části; odkazy propojují vodítka, místa a události.</p><p>Autorský zdroj zůstává v Its a Plan. Při importu použij Aktualizovat jen příručku pro změnu dokumentace bez zásahu do rozehrané výpravy. Tato příručka je místní, pouze pro vypravěče.</p>`},flags:{pms:{...first,guideKey:'foundry-help'}}};
-  pages.splice(1,0,help);
+  const guide=buildCaseGuide(data,value=>markdown.makeHtml(value));
+  const pages=[...(options.preparation?preparationPages(data,options.preparation,options.completed):[]),...guide].map(({id,key,...page})=>({...page,text:{...page.text,content:foundry.utils.cleanHTML(page.text.content)}}));
+  const first=guide[0]?.flags.pms??{guideCategoryId:'pmsGuideGroup001',guideGroupName:'Začít zde',guideGroupOrder:0};
+  const help={_id:'pmsFoundryHelp01',name:'Ovládání ve Foundry',type:'text',sort:1500,category:first.guideCategoryId,ownership:{default:0},title:{show:true,level:1},text:{format:1,content:`<h2>Odjezd a deníky</h2><ul><li><strong>Připravit odjezd v MHD</strong> otevře společnou tvorbu Avatarů. Po potvrzení celé party vypravěč odešle výpravu do výchozí scény případu.</li><li>Hráči otevírají nativní deník postavy. Akci zadáš z deníku nebo časové osy; hráč v deníku připraví vitálky a potvrdí ji.</li></ul><h2>Vodítka a tabule</h2><ul><li><strong>Vodítka případu</strong> nabídnou připravené nálezy. Zveřejni jen skutečně získaná fakta a podle potřeby uprav text.</li><li><strong>Archiv</strong> otevře boční kartotéku se záložkami, hledáním a filtrem případu. Nativní předměty přetáhni na tabuli; poznámky a provázky doplní vaše teorie.</li><li><strong>Celá tabule</strong> ukáže rám pracovní plochy. <strong>Zobrazit vše</strong> přiblíží rozmístěné důkazy. Karta, se kterou hýbeš, je vždy navrchu; dvojklik do plochy přidá poznámku.</li><li><strong>Vlastní nález</strong> vytvoří další společný předmět. Připravená vodítka i výbavu lze otevřít v seznamu Items.</li></ul><h2>Čas a skutečný stav</h2><ul><li>Časová osa řadí události do dějových linií a pod ně akce party. Každá budoucí událost ukazuje, zda při současném stavu světa <strong>nastane</strong>, nebo <strong>nenastane</strong>. Kliknutím zvýrazníš, co ji podmiňuje a co ovlivňuje; v detailu můžeš rovnou přepnout skutečný stav. Tažením karty přesuneš budoucí událost, Ctrl + kolečko mění měřítko a tažením prázdné plochy se posouváš.</li><li><strong>Stav případu</strong> zapisuje provedené zásahy a skutečné polohy. Změna rozkazu sama nepotvrdí jeho doručení. Změna polohy v přehledu neposouvá token.</li><li>Urči svědky a vyřeš reakce pod časovou osou. Kontroly útoku nikoho automaticky nezabíjejí.</li></ul><h2>Rozluštění a energie</h2><ul><li><strong>Poznání</strong> na časové ose nebo <strong>Rozluštění a energie</strong> v přípravě otevře neveřejnou kartu. Vyber položku, zapiš vysvětlení hráčů a potvrď odměnu. Stejné poznání se napříč návštěvami vyplácí jednou.</li><li>Historie uchovává odměny a opravy. Omyl lze odebrat, pokud zásoba pokryje opravu; jinak jej zaznamenej a nejdřív oprav navazující nákup nebo zálohu.</li><li>Přeměna úlomku je samostatná: po skutečném návratu potvrď živého nosiče, převoz uzavřené schránky a dokončené předání zařízení v hubu. Odraz ji nevyplácí.</li></ul><h2>Návrat a odrazy</h2><ul><li>Skutečný průchod skončí vypršením okna nebo smrtí posledního Avatara. <strong>Skutečný výsledek</strong> v nabídce Podklady a příprava otevře soukromý nativní deník; zápis následků doplníš v jeho hlavičce.</li><li>Před odrazem otevři MHD v režimu <strong>Odraz</strong>. Hráči použijí své uložené Avatary a mohou změnit balíček nebo přeskládat již zaplacenou sílu. Všichni znovu potvrdí sestavu.</li><li>Odjezd obnoví začátek světa, NPC, dveře a události i plnou počáteční kondici a výbavu. Archiv, tabule, energie a již přiznaná poznání zůstávají. Nálezy mají uvedený průchod, ze kterého pocházejí.</li><li>Zásahy odrazu se při návratu zahodí; skutečný konec nepřepíšou. Pokud se odjezd přeruší, zopakuj jej. Hráči se uvolní až po dokončení celé přípravy.</li></ul><h2>Scény a podlaží</h2><ul><li>Tokeny, dveře, zdi a podlaží ovládej nativními nástroji Foundry.</li><li>Výchozí scéna a podlaží jsou součástí definice případu. Přesun po schodech může nabídnout změnu podlaží.</li></ul><h2>Najít a aktualizovat přípravu</h2><p>Levý obsah a hledání jsou nativní Foundry. Podnadpisy vedou přímo k potřebné části; odkazy propojují vodítka, místa a události.</p><p>Autorskou přípravu uprav v Editoru případů. Při importu použij Aktualizovat jen příručku pro změnu dokumentace bez zásahu do rozehrané výpravy. Tato příručka je místní, pouze pro vypravěče.</p>`},flags:{pms:{...first,guideKey:'foundry-help'}}};
+  pages.splice(options.preparation?pages.length:1,0,help);
   const categories=[...new Map(pages.map(p=>{const f=p.flags.pms;return [f.guideCategoryId,{_id:f.guideCategoryId,name:f.guideGroupName,sort:f.guideGroupOrder*1000}];})).values()];
   // Only a local GM view: Foundry v14 sends world documents regardless of sidebar ownership.
-  const journal=new JournalEntry({name:`${data.title} · příručka vypravěče`,ownership:{default:0},categories,flags:{core:{locked:true,viewMode:1}},pages});
+  const journal=new JournalEntry({name:`${data.title} · ${options.preparation?'příprava na sezení':'příručka vypravěče'}`,ownership:{default:0},categories,flags:{core:{locked:true,viewMode:1}},pages});
   super({...options,document:journal});
  }
  async _onFirstRender(context,options){await super._onFirstRender(context,options);this.setPosition(firstSheetPosition(this.position,window.innerWidth,window.innerHeight));}
  _getHeaderControls(){return super._getHeaderControls().filter(c=>!['showPlayers','configCategories','configureOwnership','configureSheet'].includes(c.action));}
  get isEditable(){return false;}
+ _preparePageData(){const pages=super._preparePageData();for(const page of Object.values(pages))page.editable=false;return pages;}
+ _getEntryContextOptions(){return [];}
  async _prepareContext(options){const c=await super._prepareContext(options);for(const p of Object.values(c.pages??{}))p.editable=false;return c;}
- async _onEditPage(){ui.notifications.info('Autorskou přípravu uprav v Its a Plan a znovu importuj.');}
+ async _onEditPage(){ui.notifications.info('Autorskou přípravu uprav v editoru případu.');}
  async _onShowPlayers(){ui.notifications.warn('Příprava patří vypravěči. Pro hráče zveřejni konkrétní vodítko.');}
+}
+export class PMSPreparationJournal extends PMSCaseJournal {
+ static DEFAULT_OPTIONS={classes:['pms-case-guide','pms-gm-preparation'],form:{submitOnChange:false}};
+ constructor(options){super(options);this.caseData=options.caseData;this.preparation=options.preparation;this.pendingTasks=new Set();this.openingResource=false;}
+ guard(){if(!game.user.isGM||game.pmsAuthority?.failed)throw new Error('Příprava patří připojenému vypravěči.');}
+ get progressContext(){return {settings:game.settings,user:game.user,worldId:game.world.id,caseId:this.caseData.id,plan:this.preparation};}
+ syncProgress(){const completed=preparationProgress(this.progressContext),root=this.element;
+  // Journal sheets lock their form fields. Enable only our private checklist and resource actions.
+  for(const input of root.querySelectorAll('[data-prep-task]')){input.checked=completed.has(input.dataset.prepTask);input.disabled=this.pendingTasks.has(input.dataset.prepTask);}
+  for(const button of root.querySelectorAll('[data-prep-action]'))button.disabled=this.openingResource||(button.dataset.prepAction==='map'&&!this.preparation.maps.some(m=>m.available&&m.planId===button.dataset.planId&&m.levelKey===button.dataset.levelKey));
+  const progress=root.querySelector('[data-prep-progress]');if(progress)progress.value=completed.size;
+  const count=root.querySelector('[data-prep-count]');if(count)count.textContent=`${completed.size} / ${this.preparation.tasks.length} kroků projito`;
+ }
+ async _onRender(context,options){this.guard();await super._onRender(context,options);this.syncProgress();const root=this.element;if(root.dataset.preparationBound)return;root.dataset.preparationBound='true';
+  root.addEventListener('change',async event=>{const input=event.target.closest('[data-prep-task]');if(!input)return;event.stopPropagation();this.pendingTasks.add(input.dataset.prepTask);input.disabled=true;
+   try{await setPreparationTask({...this.progressContext,taskId:input.dataset.prepTask,completed:input.checked,guard:()=>this.guard()});}
+   catch(error){ui.notifications.warn(error.message);}finally{this.pendingTasks.delete(input.dataset.prepTask);this.syncProgress();}
+  });
+  root.addEventListener('click',async event=>{const button=event.target.closest('[data-prep-action]');if(!button||button.disabled||this.openingResource)return;event.preventDefault();event.stopPropagation();this.openingResource=true;this.syncProgress();
+   try{this.guard();if(button.dataset.prepAction==='map'){await viewPreparationMap(this.caseData,button.dataset.planId,button.dataset.levelKey,{user:game.user,scenes:game.scenes,canvas:globalThis.canvas});await this.minimize();}
+    else if(button.dataset.prepAction==='npc')await preparationActor(this.caseData,button.dataset.npcId,{user:game.user,actors:game.actors}).sheet.render({force:true});
+   }catch(error){ui.notifications.warn(error.message);}finally{this.openingResource=false;this.syncProgress();}
+  });
+ }
 }
 export class PMSResultJournal extends foundry.applications.sheets.journal.JournalEntrySheet {
  static DEFAULT_OPTIONS={classes:['pms-case-guide'],position:{width:1160,height:820},actions:{writeResult:function(){return this.cases.writeResult(this.caseId).catch(error=>ui.notifications.warn(error.message));}}};
@@ -119,6 +148,17 @@ export class CaseService {
  async showGuide(options={}){this.gm();const caseId=options.caseId??this.selectedId,data=this.forCase(caseId);if(!data)return this.importDialog();
   if(this.guideCaseId!==caseId){if(this.guideApplication)await this.guideApplication.close();this.guideApplication=undefined;}
   this.guideCaseId=caseId;this.guideApplication??=new PMSCaseJournal({caseData:data});return this.guideApplication.render({force:true,...options});}
+ async showPreparation(options={}){
+  if(!game.user.isGM||game.pmsAuthority?.failed)throw new Error('Příprava patří připojenému vypravěči.');
+  const caseId=options.caseId??this.selectedId,data=await this.reloadDefinition(caseId);
+  if(!data)throw new Error('Nejdřív importuj celý vybraný případ.');
+  const markdown=new window.showdown.Converter({tables:true}),pages=buildCaseGuide(data,value=>markdown.makeHtml(value));
+  const preparation=await buildPreparationPlan(data,pages,game.scenes);
+  const completed=preparationProgress({settings:game.settings,user:game.user,worldId:game.world.id,caseId,plan:preparation});
+  if(this.preparationApplication)await this.preparationApplication.close();
+  this.preparationApplication=new PMSPreparationJournal({caseData:data,preparation,completed});
+  return this.preparationApplication.render({force:true,pageId:PREPARATION_PAGES.overview});
+ }
  async showResult(caseId=this.selectedId){
   this.gm();const data=this.forCase(caseId);if(!data)throw new Error('Nejdřív importuj přípravu případu.');
   const settled=this.visits.queue.then(()=>this.visits.publish());this.visits.queue=settled.catch(()=>{});await settled;

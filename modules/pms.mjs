@@ -41,6 +41,7 @@ Hooks.once("init", () => {
   registerNpcTokenHooks();
   game.settings.register("pms", "visitKey", { scope: "client", config: false, type: String, default: "" });
   game.settings.register("pms", "timelineFullscreen", { scope: "client", config: false, type: Boolean, default: true });
+  game.settings.register("pms", "gmPreparationProgress", { scope: "client", config: false, type: Object, default: {} });
 });
 Hooks.on('preCreateActor',actor=>{
   if(actor.type==='avatar')actor.updateSource({'prototypeToken.sight.enabled':true});

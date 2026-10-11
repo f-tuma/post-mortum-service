@@ -293,6 +293,43 @@ body.pms-system :is(#sidebar,#sidebar-content,#players) {--color-text-primary:va
 .pms-case-guide .journal-page-content th {background:var(--pms-navy);color:var(--pms-gold);padding:9px}.pms-case-guide .journal-page-content td {padding:8px;border-color:var(--pms-faint);vertical-align:top}
 .pms-case-guide .journal-page-content tr:nth-child(even) {background:#a5c6b208}
 .pms-case-guide .guide-lead,.pms-case-guide .pms-guide-lead {font:italic 18px/1.6 Georgia,serif;color:var(--pms-muted)}
+/* Private GM preparation uses the native Journal navigation and page renderer. */
+.pms-gm-preparation .pms-prep-nav {display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+.pms-gm-preparation .pms-prep-nav a {display:inline-flex;align-items:center;gap:7px;padding:9px 12px;border:1px solid var(--pms-faint);border-radius:5px;background:var(--pms-raised);text-decoration:none}
+.pms-gm-preparation .pms-prep-nav a:hover {border-color:var(--pms-sage);background:#314541}
+.pms-gm-preparation .pms-prep-truth {padding:5px 18px 10px;background:#b8a4cf0d;border:1px solid #b8a4cf44;border-left:3px solid var(--pms-lavender);border-radius:5px}
+.pms-gm-preparation .pms-prep-truth h3 {margin-top:14px}
+.pms-gm-preparation .pms-prep-situations {padding-left:24px}
+.pms-gm-preparation .pms-prep-situations li {padding:8px 0 8px 8px;border-bottom:1px solid var(--pms-faint)}
+.pms-gm-preparation .pms-prep-progress {display:flex;align-items:center;flex-wrap:wrap;gap:14px;color:var(--pms-sage)}
+.pms-gm-preparation .pms-prep-progress progress {flex:1;min-width:120px;height:9px;accent-color:var(--pms-sage)}
+.pms-gm-preparation .pms-prep-progress progress::-webkit-progress-bar {background:var(--pms-field);border-radius:8px}
+.pms-gm-preparation .pms-prep-progress progress::-webkit-progress-value {background:var(--pms-sage);border-radius:8px}
+.pms-gm-preparation .journal-page-content .pms-prep-muted {font-size:13px;color:var(--pms-muted)}
+.pms-gm-preparation .journal-page-content .pms-prep-checklist {list-style:none;padding:0;margin:15px 0}
+.pms-gm-preparation .pms-prep-checklist li {display:flex;align-items:center;gap:15px;padding:13px 15px;margin:8px 0;border:1px solid var(--pms-faint);border-radius:6px;background:var(--pms-panel)}
+.pms-gm-preparation .pms-prep-checklist label {display:flex;align-items:center;gap:14px;flex:1;min-width:0;cursor:pointer}
+.pms-gm-preparation .pms-prep-checklist input[type=checkbox] {--checkbox-size:20px;--checkbox-background-color:#60756f;--checkbox-checked-color:var(--pms-sage);--checkbox-checkmark-color:var(--pms-bg);display:grid;place-items:center;position:relative;flex:0 0 20px;width:20px;height:20px;margin:0;align-self:center;accent-color:var(--pms-sage)}
+.pms-gm-preparation .pms-prep-checklist input[type=checkbox]::before,.pms-gm-preparation .pms-prep-checklist input[type=checkbox]::after {grid-area:1/1;margin:0}
+.pms-gm-preparation .pms-prep-checklist small {display:block;font:13px/1.5 Signika,sans-serif;color:var(--pms-muted);margin-top:3px}
+.pms-gm-preparation .pms-prep-checklist a {display:inline-flex;align-items:center;gap:6px;flex:none;padding:8px 6px;text-decoration:none}
+.pms-gm-preparation .pms-prep-checklist li:has(input:checked) {border-color:#a5c6b255;background:#a5c6b20a}
+.pms-gm-preparation .pms-prep-maps {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;margin-top:20px}
+.pms-gm-preparation .pms-prep-map {padding:18px;background:var(--pms-panel);border:1px solid var(--pms-faint);border-radius:6px;min-width:0}
+.pms-gm-preparation .pms-prep-map h2 {font-size:20px;margin:0 0 15px}
+.pms-gm-preparation .pms-prep-map h3 {margin-top:14px}
+.pms-gm-preparation .pms-prep-map img {display:block;width:100%;height:170px;object-fit:contain;border:0;background:var(--pms-field)}
+.pms-gm-preparation .pms-prep-map-placeholder {display:grid;place-items:center;height:120px;font-size:40px;color:var(--pms-rule);background:var(--pms-field)}
+.pms-gm-preparation .pms-prep-map button {width:100%;height:auto;min-height:40px;white-space:normal}
+.pms-gm-preparation .journal-page-content .pms-prep-readings {list-style:none;padding:0}
+.pms-gm-preparation .pms-prep-readings li {display:flex;align-items:center;flex-wrap:wrap;gap:10px;padding:10px 12px;margin:6px 0;background:var(--pms-panel);border:1px solid var(--pms-faint);border-radius:4px}
+.pms-gm-preparation .pms-prep-readings a {flex:1;min-width:160px;display:flex;align-items:center;gap:9px;text-decoration:none}
+.pms-gm-preparation .pms-prep-readings button {display:inline-flex;align-items:center;gap:7px;height:auto;min-height:34px;padding:7px 10px}
+.pms-gm-preparation .pms-preparation button {background:var(--pms-raised);color:var(--pms-ink);border:1px solid var(--pms-rule);border-radius:4px;cursor:pointer}
+.pms-gm-preparation .pms-preparation button:hover:not(:disabled) {background:#314541;border-color:var(--pms-sage)}
+.pms-gm-preparation .pms-preparation button:disabled {opacity:.5;cursor:default}
+.pms-gm-preparation .pms-preparation :is(a,button,input):focus-visible {outline:2px solid var(--pms-focus);outline-offset:3px}
+@media(max-width:1000px){.pms-gm-preparation .pms-prep-maps {grid-template-columns:1fr}.pms-gm-preparation .pms-prep-checklist li {flex-wrap:wrap}.pms-gm-preparation .pms-prep-checklist a {margin-left:34px}.pms-gm-preparation .pms-prep-checklist label {flex-basis:100%}}
 :is(.pms-character-main,.pms-archive,.mhd-main,.mhd-party,.pms-visit-dialog) {scrollbar-width:thin;scrollbar-color:var(--pms-rule) transparent}
 @media(max-width:1100px){.mhd-energy-number {width:100px;height:100px}.mhd-energy-number strong {font-size:44px}.mhd-identity {padding-right:12px}}
 @media(max-width:800px){.pms-character-name h1 {font-size:35px}.pms-case-guide .journal-sidebar {flex-basis:210px}.pms-case-guide .journal-entry-pages {padding:16px 20px}}
