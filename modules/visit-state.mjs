@@ -70,7 +70,7 @@ function offerSpec(c, avatar) {
 }
 export function publicVisit(state) {
   if (!state) return null;
-  const { events, world, eventLog, ...projection } = structuredClone(state);
+  const { events, world, eventLog, history, ...projection } = structuredClone(state);
   projection.pause = state.pause ? { kind: state.pause.kind, eligible: state.pause.eligible ?? [] } : null;
   // Future events, hidden world changes and GM notes never enter the public document.
   return projection;

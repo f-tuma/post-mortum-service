@@ -2,7 +2,9 @@
 
 Vyšetřovací TTRPG systém pro Foundry VTT 14. Výpravy vstupují do samostatných realit, sbírají vodítka a skládají případy na společné tabuli důkazů. MHD uzavírá návštěvy; odrazy umožňují návraty bez změny skutečného výsledku.
 
-Aktuální verze: **0.13.9**, testovaná s Foundry **14.368**. Jde o verzi pro společné testování.
+Aktuální verze: **0.13.10**, testovaná s Foundry **14.368**. Jde o verzi pro společné testování.
+
+Verze 0.13.10 opravuje interní odkazy v přípravě vypravěče a denících NPC: kapitoly, dokumenty a podlaží se otevírají přímo ve Foundry, také pomocí klávesnice. Hráčské texty úvodního případu popisují nálezy a svědectví bez komentářů vypravěče; úvod sektoru neprozrazuje řešení. Poznámky vypravěče nejsou součástí sdílené historie výpravy. Při připojení hlavního GM se opraví přesně odpovídající staré výchozí texty vodítek a průvodce; vlastní přepsané texty se zachovají.
 
 ## Instalace přes manifest
 
@@ -64,7 +66,7 @@ Volba **Aktualizovat jen příručku** přenese pouze její obsah a použité so
 
 Tento repozitář obsahuje distribuovanou část systému. Pracovní podklady a testovací světy nejsou jeho součástí.
 
-Po změně verze v `system.json` vytvoř odpovídající Git tag, například `v0.13.9`. Workflow ověří verzi, sestaví `pms.zip`, `system.json`, `tetove.json` a kontrolní součty, nahraje je do návrhu vydání a po dokončení uploadu jej zveřejní.
+Po změně verze v `system.json` vytvoř odpovídající Git tag, například `v0.13.10`. Workflow ověří verzi, sestaví `pms.zip`, `system.json`, `tetove.json` a kontrolní součty, nahraje je do návrhu vydání a po dokončení uploadu jej zveřejní.
 
 Lokální sestavení z kořene tohoto repozitáře:
 

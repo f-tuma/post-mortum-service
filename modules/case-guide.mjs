@@ -1,4 +1,6 @@
 /** Read only the imported guide. Authored GM material is compiled offline and sealed. */
+import {correctTetoveGuideQuote} from './tetove-public-text.mjs';
+import {correctTetoveReadAloud} from './tetove-read-aloud.mjs';
 const escape = value => String(value ?? '').replace(/[&<>"']/g, char => ({
   '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
 })[char]);
@@ -20,7 +22,7 @@ export function buildCaseGuide(data, markdownToHTML = value => `<p>${escape(valu
         throw new Error('Neplatná stránka příručky.');
       seen.add(page._id);
       return { ...structuredClone(page), ownership: { default: 0 }, type: 'text',
-        text: { format: 1, content: page.text.content } };
+        text: { format: 1, content: data.id==='tetove'?correctTetoveReadAloud(correctTetoveGuideQuote(page,markdownToHTML)):page.text.content } };
     });
   }
   // Older encrypted imports remain readable until the GM updates the guide.

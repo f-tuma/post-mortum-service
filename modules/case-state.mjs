@@ -6,6 +6,7 @@ import {upgradeLegacyCase} from './tetove-compat.mjs';
 import {validateLoopDefinition,definitionId} from './case-definition.mjs';
 import {avatarCatalog} from './avatar-catalog.mjs';
 import {validatePreparation} from './case-preparation.mjs';
+import {correctTetovePublicText} from './tetove-public-text.mjs';
 export function validateCase(data){
  if(data?.format!=='pms-case'||![1,2].includes(data.version))throw new Error('Neznámý formát případu.');
  data=data.version===1?upgradeLegacyCase(data):structuredClone(data);definitionId(data.id);
@@ -24,7 +25,7 @@ export function validateCase(data){
  createVisit({id:'validation',title:data.title,start:data.start,end:data.end,events:data.events,world:data.world,caseId:data.id,avatars:[{id:'validation',ownerId:'validation',name:'Validace'}]});
  validateLoopDefinition(data);if(data.initialSnapshot)validateInitialSnapshot(data.initialSnapshot,data);data.avatarCatalog=avatarCatalog(data.avatarCatalog,data.id);
  if(data.sourceContentVersion!==undefined&&(!Number.isSafeInteger(data.sourceContentVersion)||data.sourceContentVersion<1))throw new Error('Neplatná zdrojová verze přípravy.');
- return structuredClone(data);
+ return structuredClone(correctTetovePublicText(data));
 }
 
 /** Replace documentation only; every gameplay field comes from the installed case. */

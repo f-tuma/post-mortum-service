@@ -21,6 +21,8 @@ import {buildPreparationPlan,preparationProgress,setPreparationTask,viewPreparat
 import {preparationPages} from './case-preparation-view.mjs';
 import {caseRemoved,assertCaseAvailable} from './case-lifecycle.mjs';
 import {updateCaseZip} from './case-update.mjs';
+import {bindFoundryNavigation} from './foundry-navigation.mjs';
+import {correctTetovePublicText,migrateTetoveClues} from './tetove-public-text.mjs';
 const NS='pms';
 const marked=(d,key)=>d.getFlag(NS,key);
 export class PMSCaseJournal extends foundry.applications.sheets.journal.JournalEntrySheet {
@@ -41,6 +43,7 @@ export class PMSCaseJournal extends foundry.applications.sheets.journal.JournalE
   super({...options,document:journal});
  }
  async _onFirstRender(context,options){await super._onFirstRender(context,options);this.setPosition(firstSheetPosition(this.position,window.innerWidth,window.innerHeight));}
+ async _onRender(context,options){await super._onRender(context,options);bindFoundryNavigation(this.element);}
  _getHeaderControls(){return super._getHeaderControls().filter(c=>!['showPlayers','configCategories','configureOwnership','configureSheet'].includes(c.action));}
  get isEditable(){return false;}
  _preparePageData(){const pages=super._preparePageData();for(const page of Object.values(pages))page.editable=false;return pages;}
@@ -79,6 +82,7 @@ export class PMSResultJournal extends foundry.applications.sheets.journal.Journa
  get isEditable(){return false;}
  _getHeaderControls(){return [{action:'writeResult',icon:'fa-solid fa-pen',label:'Zapsat skutečný konec'},...super._getHeaderControls().filter(c=>!['showPlayers','configCategories','configureOwnership','configureSheet'].includes(c.action))];}
  async _onFirstRender(context,options){await super._onFirstRender(context,options);this.setPosition(firstSheetPosition(this.position,window.innerWidth,window.innerHeight));}
+ async _onRender(context,options){await super._onRender(context,options);bindFoundryNavigation(this.element);}
  async _prepareContext(options){const c=await super._prepareContext(options);for(const p of Object.values(c.pages??{}))p.editable=false;return c;}
  async _onEditPage(){return this.cases.writeResult(this.caseId).catch(error=>ui.notifications.warn(error.message));}
  async _onShowPlayers(){ui.notifications.warn('Skutečný výsledek patří vypravěči. Zveřejni jen konkrétní nález.');}
@@ -89,12 +93,14 @@ export class CaseService {
  set data(value){if(!value){this.selectedId=null;return;}this.definitions.set(value.id,value);this.selectedId=value.id;}
  get vault(){return game.journal.find(d=>marked(d,'kind')==='caseVault'&&marked(d,'caseId')===this.selectedId);}
  forCase(id){return game.user.isGM&&!caseRemoved(id)?this.definitions.get(id)??null:null;}
- definitionFor(id){const authored=this.forCase(id),runtime=this.runtimeDefinitions.get(id);return authored?{...authored,...(runtime&&!(authored.initialSnapshot&&authored.contentVersion>runtime.contentVersion)?runtime:{})}:null;}
+ definitionFor(id){const authored=this.forCase(id),runtime=this.runtimeDefinitions.get(id);return authored?correctTetovePublicText({...authored,...(runtime&&!(authored.initialSnapshot&&authored.contentVersion>runtime.contentVersion)?runtime:{})}):null;}
  get availableCases(){return game.user.isGM?[...this.definitions.values()].filter(d=>!caseRemoved(d.id)).map(d=>({id:d.id,title:d.title})):[];}
  async reloadDefinition(id){if(!game.user.isGM)return null;assertCaseAvailable(id);const vault=game.journal.find(d=>marked(d,'kind')==='caseVault'&&marked(d,'caseId')===id);if(!vault)return this.forCase(id);const data=validateCase(await this.visits.unseal(marked(vault,'sealed')));this.definitions.set(id,data);return data;}
  async initialize(){if(!game.user.isGM||game.pmsAuthority?.failed)return;if(!this.lifecycleHook)this.lifecycleHook=Hooks.on('deleteJournalEntry',doc=>{if(marked(doc,'kind')==='caseVault'){const id=marked(doc,'caseId');this.definitions.delete(id);this.runtimeDefinitions.delete(id);if(this.selectedId===id)this.selectedId=null;}});if(!this.authorityHook){this.authorityHook=Hooks.on('pmsAuthorityChanged',()=>{if(this.visits.isAuthority)this.initialize().then(()=>ui.controls.render({force:true})).catch(e=>ui.notifications.warn(e.message));});}for(const vault of game.journal.filter(d=>marked(d,'kind')==='caseVault'&&!caseRemoved(marked(d,'caseId')))){try{this.data=await this.reloadDefinition(marked(vault,'caseId'));}catch(e){ui.notifications.warn(e.message);}}
   const campaign=game.journal.find(d=>marked(d,'kind')==='avatarCampaign')?.getFlag(NS,'campaign');
   const preferred=campaign?.preparation?.caseId??this.visits.state?.caseId;if(this.definitions.has(preferred))this.selectedId=preferred;
+  try{await migrateTetoveClues([...(game.items??[]),...[...(game.actors??[])].flatMap(a=>a.items?.contents??[])],()=>game.user.isGM&&this.visits.isAuthority&&!game.pmsAuthority?.failed);}
+  catch(error){ui.notifications.warn(`Úpravu výchozích textů vodítek se nepodařilo dokončit: ${error.message}`);}
  }
  async refreshTemplates(){if(!this.memory?.avatars.state?.initialized)return;const memory=await this.memory.read();for(const [id,template] of Object.entries(memory.templates))this.runtimeDefinitions.set(id,template.definition);}
  async preparationDefinition(id){this.gm();await this.reloadDefinition(id);await this.refreshTemplates();const data=this.definitionFor(id);if(!data)throw new Error('Nejdřív importuj vybraný případ.');return data;}
@@ -148,7 +154,7 @@ export class CaseService {
  async repair(){if(!this.data)throw new Error('Nejdřív importuj přípravu.');return this.install(this.data);}
  installNpcPortraits(caseId=this.selectedId){return installCaseNpcPortraits(this,caseId);}
  async showEditor(){return game.pms.openCaseEditor();}
- async showGuide(options={}){this.gm();const caseId=options.caseId??this.selectedId,data=this.forCase(caseId);if(!data)return this.importDialog();
+ async showGuide(options={}){if(!game.user.isGM||game.pmsAuthority?.failed)throw new Error('Příprava patří připojenému vypravěči.');const caseId=options.caseId??this.selectedId,data=this.forCase(caseId);if(!data){if(this.visits.isAuthority)return this.importDialog();throw new Error('Nejdřív importuj celý vybraný případ.');}
   if(this.guideCaseId!==caseId){if(this.guideApplication)await this.guideApplication.close();this.guideApplication=undefined;}
   this.guideCaseId=caseId;this.guideApplication??=new PMSCaseJournal({caseData:data});return this.guideApplication.render({force:true,...options});}
  async showPreparation(options={}){

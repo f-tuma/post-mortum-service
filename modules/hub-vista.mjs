@@ -5,6 +5,7 @@ import {HubPanEasing} from './hub-pan.mjs';
 import {publicOfferProfile} from './case-catalog.mjs';
 import {presentScene} from './scene-transition.mjs';
 import {caseRemoved} from './case-lifecycle.mjs';
+import {bindFoundryNavigation} from './foundry-navigation.mjs';
 
 export const HUB_ACTIONS={cases:{label:'Případy',icon:'book-open'},mhd:{label:'MHD',icon:'train-subway'},archive:{label:'Archiv',icon:'boxes-stacked'},board:{label:'Tabule',icon:'thumbtack'}};
 export const HUB_LEVEL='pmsHubGround0001';
@@ -180,7 +181,7 @@ export class HubVistaService {
   if(!offers.length){if(game.user.isGM)return game.pms.cases.importDialog();ui.notifications.info('Vypravěč zatím nepřipravil žádné pověření.');return;}
   if(offers.length===1)return offers[0].sheet.render({force:true});
   // The catalog is a native Journal, with native navigation and links into individual offers.
-  const journal=new JournalEntry({name:'PMS · nabídka případů',ownership:{default:2},flags:{core:{sheetClass:'pms.PMSCaseOfferJournal'}},pages:offers.map((offer,i)=>({name:offer.name,type:'text',sort:i*1000,title:{show:true,level:1},text:{format:1,content:`<h2>${esc(offer.name)}</h2><p><a class="content-link" data-uuid="JournalEntry.${esc(offer.id)}"><i class="fa-solid fa-book-open"></i> Otevřít pověření</a></p>${offer.pages.contents.map(p=>p.text.content).join('')}`}}))});
+  const journal=new JournalEntry({name:'PMS · nabídka případů',ownership:{default:2},flags:{core:{sheetClass:'pms.PMSCaseOfferJournal'}},pages:offers.map((offer,i)=>({name:offer.name,type:'text',sort:i*1000,title:{show:true,level:1},text:{format:1,content:`<h2>${esc(offer.name)}</h2><p>${offer.toAnchor({name:'Otevřít pověření'}).outerHTML}</p>${offer.pages.contents.filter(p=>p.testUserPermission(game.user,'OBSERVER')).map(p=>p.text.content).join('')}`}}))});
   return new PMSCaseOfferJournal({document:journal}).render({force:true});
  }
  async activate(action){
@@ -266,6 +267,7 @@ export class PMSCaseOfferJournal extends foundry.applications.sheets.journal.Jou
  static DEFAULT_OPTIONS={classes:['pms-case-guide'],position:{width:1040,height:780},actions:{prepareCase:async function(){try{await game.pms.cases.select(this.document.getFlag('pms','caseId'));await game.pms.openAvatarCreation();}catch(e){ui.notifications.warn(e.message);}}}};
  get isEditable(){return false;}
  async _onFirstRender(context,options){await super._onFirstRender(context,options);this.setPosition(firstSheetPosition(this.position,window.innerWidth,window.innerHeight));}
+ async _onRender(context,options){await super._onRender(context,options);bindFoundryNavigation(this.element);}
  async _prepareContext(options){const c=await super._prepareContext(options);for(const p of Object.values(c.pages??{}))p.editable=false;return c;}
  _getHeaderControls(){const controls=super._getHeaderControls().filter(c=>!['showPlayers','configCategories','configureOwnership','configureSheet'].includes(c.action));return game.user.isGM&&this.document.getFlag('pms','caseId')?[{action:'prepareCase',icon:'fa-solid fa-train-subway',label:'Připravit tento případ v MHD'},...controls]:controls;}
  async _onEditPage(){}

@@ -1,7 +1,7 @@
 import {escape as esc,icon,span} from './view-utils.mjs';
 import {caseTime} from './case-clock.mjs';
 import {PREPARATION_PAGES} from './case-preparation.mjs';
-const link=(pageId,label,anchor='')=>`<a href="#" data-action="goToHeading" data-page-id="${esc(pageId)}"${anchor?` data-anchor="${esc(anchor)}"`:''}>${label}</a>`;
+const link=(pageId,label,anchor='')=>`<a role="button" tabindex="0" data-action="goToHeading" data-page-id="${esc(pageId)}"${anchor?` data-anchor="${esc(anchor)}"`:''}>${label}</a>`;
 const paragraphs=text=>String(text??'').split(/\n\s*\n/).filter(s=>s.trim()).map(s=>`<p>${esc(s)}</p>`).join('');
 const safeThumbnail=value=>typeof value==='string'&&value&&!/[\x00-\x1f\\]/.test(value)&&!value.includes('..')&&(!/^(?:[a-z]+:|\/\/)/i.test(value)||/^https?:\/\//i.test(value))?value:'';
 function page(id,name,sort,content){return {_id:id,name,type:'text',sort,category:PREPARATION_PAGES.category,ownership:{default:0},title:{show:true,level:1},text:{format:1,content},flags:{pms:{guideKey:id,guideGroup:'gm-preparation',guideGroupName:'Příprava na sezení',guideGroupOrder:-1,guideCategoryId:PREPARATION_PAGES.category}}};}
