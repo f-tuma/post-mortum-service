@@ -6,7 +6,8 @@ export const STARTER_CASE_PATH='systems/pms/cases/tetove.json';
 
 /** Install once in a new world; the world marker outlives case deletion. */
 export class StarterCaseService {
- constructor(cases,{previouslyInitialized=false,fetch=globalThis.fetch}={}){Object.assign(this,{cases,previouslyInitialized,fetch});}
+ // Browser fetch needs its Window receiver even when stored on this service.
+ constructor(cases,{previouslyInitialized=false,fetch=globalThis.fetch.bind(globalThis)}={}){Object.assign(this,{cases,previouslyInitialized,fetch});}
  get state(){return game.settings.get('pms','starterCase');}
  get entry(){
   const installed=game.journal.some(d=>d.getFlag('pms','kind')==='caseVault'&&d.getFlag('pms','caseId')===STARTER_CASE);
