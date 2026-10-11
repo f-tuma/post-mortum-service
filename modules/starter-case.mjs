@@ -8,17 +8,27 @@ export const STARTER_CASE_PATH='systems/pms/cases/tetove.json';
 export class StarterCaseService {
  constructor(cases,{previouslyInitialized=false,fetch=globalThis.fetch}={}){Object.assign(this,{cases,previouslyInitialized,fetch});}
  get state(){return game.settings.get('pms','starterCase');}
- async dismiss(caseId=STARTER_CASE){if(caseId===STARTER_CASE&&this.cases.visits.isAuthority&&this.state!=='done')await game.settings.set('pms','starterCase','done');}
- ensure(){
-  if(this.installing)return this.installing;
-  this.installing=this.prepare().finally(()=>{this.installing=null;});return this.installing;
+ get entry(){
+  const installed=game.journal.some(d=>d.getFlag('pms','kind')==='caseVault'&&d.getFlag('pms','caseId')===STARTER_CASE);
+  return {caseId:STARTER_CASE,title:'Zkáza rodu Tétů',cover:'systems/pms/assets/hub/tetove-cover-v1.png',status:caseRemoved(STARTER_CASE)?'trashed':this.state==='installing'?'incomplete':installed?'installed':'available',busy:!!this.installing};
  }
- async prepare(){
-  if(!this.cases.visits.isAuthority||this.state==='done')return false;
+ async dismiss(caseId=STARTER_CASE){if(caseId===STARTER_CASE&&this.cases.visits.isAuthority&&this.state!=='done')await game.settings.set('pms','starterCase','done');}
+ ensure(){return this.start(false);}
+ installFromMenu(){this.cases.gm();return this.start(true);}
+ start(manual){
+  if(this.installing)return this.installing;
+  this.installing=this.prepare({manual}).finally(()=>{this.installing=null;game.pms?.catalog?.notify();});return this.installing;
+ }
+ async prepare({manual=false}={}){
+  if(!this.cases.visits.isAuthority||!manual&&this.state==='done')return false;
   const existing=game.journal.some(d=>d.getFlag('pms','kind')==='caseVault');
   const starterExists=game.journal.some(d=>d.getFlag('pms','kind')==='caseVault'&&d.getFlag('pms','caseId')===STARTER_CASE);
-  if(caseRemoved(STARTER_CASE)||this.state!=='installing'&&(this.previouslyInitialized||existing)){await this.dismiss();return false;}
-  if(this.cases.visits.state?.status==='active'||game.pms?.avatars.state?.preparation?.status==='preparing')return false;
+  if(caseRemoved(STARTER_CASE)){if(manual)throw new Error('Tétové jsou v koši. Obnov je ve Správě případů → Koš.');await this.dismiss();return false;}
+  if(manual&&starterExists&&this.state!=='installing')return false;
+  if(!manual&&this.state!=='installing'&&(this.previouslyInitialized||existing)){await this.dismiss();return false;}
+  if(this.cases.visits.state?.status==='active'||this.cases.visits.privateState?.status==='active'||game.pms?.avatars.state?.preparation?.status==='preparing'){
+   if(manual)throw new Error('Připrav úvod mezi výpravami a mimo tvorbu Avatarů.');return false;
+  }
   // A partial first install resumes its saved definition rather than silently
   // replacing it with a newer system package after a reconnect.
   let data=this.state==='installing'?this.cases.forCase(STARTER_CASE):null;

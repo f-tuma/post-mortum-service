@@ -13,6 +13,7 @@ export class CaseCatalogService{
  notify(){for(const fn of this.listeners)fn();}
  get state(){return this.avatars.state;}
  get managementCases(){return game.user.isGM?game.pms?.caseLifecycle?.entries??[]:[];}
+ get bundledStarter(){return game.user.isGM?game.pms?.starterCase?.entry??null:null;}
  get guide(){return game.journal.find(d=>d.getFlag('pms','kind')==='sectorGuide'&&d.testUserPermission(game.user,'OBSERVER'));}
  get offers(){
   const players=this.avatars.eligibleOwnerIds.map(id=>game.users.get(id));

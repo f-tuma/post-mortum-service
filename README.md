@@ -2,7 +2,7 @@
 
 Vyšetřovací TTRPG systém pro Foundry VTT 14. Výpravy vstupují do samostatných realit, sbírají vodítka a skládají případy na společné tabuli důkazů. MHD uzavírá návštěvy; odrazy umožňují návraty bez změny skutečného výsledku.
 
-Aktuální verze: **0.13.7**, testovaná s Foundry **14.368**. Jde o verzi pro společné testování.
+Aktuální verze: **0.13.8**, testovaná s Foundry **14.368**. Jde o verzi pro společné testování.
 
 ## Instalace přes manifest
 
@@ -20,7 +20,9 @@ Po připojení se automaticky otevře celoobrazovkový **Sektor PMS** s recepcí
 
 Tétové jsou součástí systému jako první sezení. V novém světě se při prvním připojení hlavního vypravěče automaticky připraví 9 NPC, 20 vodítek, 30 časových událostí a scény s gridem, dveřmi, stěnami a podlažími. V recepci otevři **Přípravu pro Vypravěče**; výpravu zahájíš později v MHD.
 
-Aktualizace systému nepřepisuje případy ve stávajícím světě ani nevrací odebrané Téty. Pro ruční import do staršího světa je příprava v `cases/tetove.json` uvnitř instalace nebo jako [samostatný soubor](https://github.com/f-tuma/post-mortum-service/releases/latest/download/tetove.json). Použij **Popohřební služba → Podklady a příprava → Importovat případ…**.
+Ve dříve spuštěném světě otevři jako vypravěč **Recepce → Pověření → Nové případy**. Pokud Tétové chybí, karta **Součást systému · první sezení** nabízí **Připravit případ**. Není potřeba stahovat ani importovat další soubor; mapy, portréty i příručka jsou v instalaci PMS.
+
+Existující případ zůstane zachovaný. Karta nabídne správu jeho podkladů nebo obnovu z koše; přerušenou první instalaci lze dokončit. Příprava probíhá mezi výpravami a mimo tvorbu Avatarů. Aktualizace systému sama nevrací odebrané Téty. Pro ruční přenos je příprava také v `cases/tetove.json` a jako [samostatný soubor](https://github.com/f-tuma/post-mortum-service/releases/latest/download/tetove.json).
 
 Případ obsahuje informace pro vypravěče včetně řešení záhady. Při aktualizaci rozehraného případu můžeš zvolit pouze aktualizaci příručky.
 
@@ -62,7 +64,7 @@ Volba **Aktualizovat jen příručku** přenese pouze její obsah a použité so
 
 Tento repozitář obsahuje distribuovanou část systému. Pracovní podklady a testovací světy nejsou jeho součástí.
 
-Po změně verze v `system.json` vytvoř odpovídající Git tag, například `v0.13.7`. Workflow ověří verzi, sestaví `pms.zip`, `system.json`, `tetove.json` a kontrolní součty, nahraje je do návrhu vydání a po dokončení uploadu jej zveřejní.
+Po změně verze v `system.json` vytvoř odpovídající Git tag, například `v0.13.8`. Workflow ověří verzi, sestaví `pms.zip`, `system.json`, `tetove.json` a kontrolní součty, nahraje je do návrhu vydání a po dokončení uploadu jej zveřejní.
 
 Lokální sestavení z kořene tohoto repozitáře:
 

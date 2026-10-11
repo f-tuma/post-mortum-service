@@ -28,6 +28,12 @@ export class CaseCatalogApplication extends HubMenuApplication{
  constructor(service){super(service);this.view.ownerIds=[...service.avatars.eligibleOwnerIds];this.view.caseIds=service.newOffers.map(o=>o.caseId);}
  markup(){this.view.activeVisit=game.pms.visits.state?.status==='active';this.view.preparing=game.pms.avatars.state?.preparation?.status==='preparing';return catalogMarkup(this.service,this.view,game.users.contents,game.user);}
  async action(command,value){
+  if(command==='installStarterCase'){
+   if(!game.user.isGM)throw new Error('Úvodní případ připravuje vypravěč.');
+   this.view.installingStarter=true;await this.render({force:true});
+   try{await game.pms.starterCase.installFromMenu();this.view.tab='new';this.view.search='';}
+   finally{this.view.installingStarter=false;}return;
+  }
   if(['trash','restore','remove'].includes(command))return game.pms.caseLifecycle?.dialog(command,value);
   if(command==='updateCase')return game.pms.cases.updateDialog(value);
   if(command==='editCase'){await game.pms.caseEditor.open(value);return this.close();}
