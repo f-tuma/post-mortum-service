@@ -24,9 +24,11 @@ import {CaseLifecycleService} from './case-lifecycle.mjs';
 import {StarterCaseService} from './starter-case.mjs';
 import {registerSoulTokenHooks} from './soul-token.mjs';
 import {NpcTokenService,registerNpcTokenHooks} from './npc-token-service.mjs';
+import {RoomNoteService,createRoomNoteClass,registerRoomNoteHooks} from './room-note-service.mjs';
 
 Hooks.once("init", () => {
   CONFIG.Tile.documentClass=createVistaTileDocument(CONFIG.Tile.documentClass);
+  CONFIG.Note.objectClass=createRoomNoteClass(CONFIG.Note.objectClass);
   CONFIG.Actor.dataModels.avatar = AvatarModel;
   CONFIG.Actor.dataModels.npc = AvatarModel;
   CONFIG.Item.dataModels.supply = SupplyModel;
@@ -41,6 +43,7 @@ Hooks.once("init", () => {
   registerActionChatHooks();
   registerSoulTokenHooks();
   registerNpcTokenHooks();
+  registerRoomNoteHooks();
   game.settings.register("pms", "visitKey", { scope: "client", config: false, type: String, default: "" });
   game.settings.register("pms", "timelineFullscreen", { scope: "client", config: false, type: Boolean, default: true });
   game.settings.register("pms", "gmPreparationProgress", { scope: "client", config: false, type: Object, default: {} });
@@ -74,9 +77,10 @@ Hooks.once("ready", async () => {
   const caseMenu=game.user.isGM?new CaseMenu(cases):null;
   const hub=new HubVistaService();
   const npcTokens=new NpcTokenService();
+  const roomNotes=new RoomNoteService(cases);
   const catalog=new CaseCatalogService(avatars),caseCatalog=new CaseCatalogApplication(catalog);
   game.pms = { service, board, visits, visit, timeline, cases, caseMenu, hub, avatars, avatarWizard, rewards, rewardCard, memory, openHub:()=>hub.enter().catch(error=>ui.notifications.warn(error.message)), openRewards:()=>{if(game.user.isGM)return rewardCard.render({force:true});}, openAvatarCreation:()=>avatarWizard.render({force:true}), openBoard: options => board.openCase(options).catch(error=>ui.notifications.warn(error.message)), openTimeline: () => {if(!game.user.isGM)return;return timeline.render({force:true});} };
-  Object.assign(game.pms,{npcTokens,catalog,caseCatalog,sectorArchive:new SectorArchiveApplication(catalog),openSectorArchive:()=>game.pms.sectorArchive.render({force:true})});
+  Object.assign(game.pms,{npcTokens,roomNotes,catalog,caseCatalog,sectorArchive:new SectorArchiveApplication(catalog),openSectorArchive:()=>game.pms.sectorArchive.render({force:true})});
   if(game.user.isGM)game.pms.caseLifecycle=new CaseLifecycleService(cases);
   const starterCase=new StarterCaseService(cases,{previouslyInitialized});game.pms.starterCase=starterCase;
   Hooks.on('pmsAuthorityChanged',()=>{if(visits.isAuthority)starterCase.ensure().catch(error=>ui.notifications.error(error.message));});
@@ -86,6 +90,7 @@ Hooks.once("ready", async () => {
   if(visits.isAuthority){try{await hub.ensure();await hub.startup();await catalog.ensureGuide();}catch(error){ui.notifications.error(error.message);}
    try{await starterCase.ensure();}catch(error){ui.notifications.error(error.message);}
    try{for(const data of cases.definitions.values())await hub.publishOffer(data);}catch(error){ui.notifications.error(error.message);}
+   try{await roomNotes.ensureAll();}catch(error){ui.notifications.warn(error.message);}
   }
   if(canvas.ready)hub.mount();avatars.onChange(()=>hub.energy());
   if(visits.isAuthority&&visits.privateState?.status==='returned'&&avatars.state?.initialized){try{await visits.publish();}catch(error){ui.notifications.error(error.message);}}

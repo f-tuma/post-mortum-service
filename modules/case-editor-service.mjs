@@ -65,7 +65,7 @@ export class CaseEditorService {
  detach(draft,document){return this.serial(()=>this.campaignWrite(()=>{this.currentDraft(draft);return this.detachQueued(draft,document);}));}
  async detachQueued(draft,document){this.guard(true);if(flag(document,'caseBundle')!==draft.caseId)throw new Error('Dokument nepatří otevřenému případu.');const kind=document.documentName,key=kind==='Scene'?'caseScene':kind==='Actor'?'caseNpc':kind==='Item'?'caseTemplateItem':null;if(!key)throw new Error('Tento dokument nelze odpojit.');
   let next=structuredClone(draft);const id=flag(document,key);
-  if(kind==='Scene'){if(next.definition.entry.sceneId===id)throw new Error('Nejdřív zvol jinou vstupní scénu.');next.definition.scenePlans=next.definition.scenePlans.filter(p=>p.id!==id);}
+  if(kind==='Scene'){if(next.definition.entry.sceneId===id)throw new Error('Nejdřív zvol jinou vstupní scénu.');next.definition.scenePlans=next.definition.scenePlans.filter(p=>p.id!==id);if(next.definition.roomNotes)next.definition.roomNotes=next.definition.roomNotes.filter(n=>n.sceneId!==id);if(next.definition.guidePages)next.definition.guidePages=next.definition.guidePages.filter(p=>p.flags?.pms?.roomSceneId!==id);}
   if(kind==='Actor'){if(game.scenes.some(s=>flag(s,'caseBundle')===draft.caseId&&s.tokens.some(t=>t.actorId===document.id)))throw new Error('Nejdřív odstraň tokeny tohoto NPC ze scén případu.');next=removeEditorRecord(next,'npcs',id);}
   await document.update({'flags.pms.caseBundle':new foundry.data.operators.ForcedDeletion(),[`flags.pms.${key}`]:new foundry.data.operators.ForcedDeletion()});next.snapshot=null;return next;
  }

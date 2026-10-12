@@ -3899,6 +3899,197 @@
     "title": "Úlomek zkázy rodu Tétů",
     "amount": 20
   },
+  "roomNotes": [
+    {
+      "sceneId": "manor",
+      "roomId": "L01",
+      "description": "Portréty rodu, připravené židle a tři smuteční stuhy na stole. Za oknem stojí pohřební vůz. Oto raději zůstává stát; Korda nabízí pomoc.",
+      "notes": "Zde začíná společná audience v 08:00. Oto předá pověření, popíše úmrtí a umožní prohlídku domácnosti. Jeho přesvědčení o kletbě je výpověď, nikoli závěr vyšetřování.",
+      "guideKey": "location-manor",
+      "anchor": "l01"
+    },
+    {
+      "sceneId": "manor",
+      "roomId": "dining",
+      "description": "Dlouhý jídelní stůl je připravený pro méně lidí, než kolik se jich vejde na okolní židle. Služební dveře spojují jídelnu s provozem domácnosti.",
+      "notes": "Místo běžného domácího setkání a případného jídla. Jídlo může obnovit vitálky podle pravidel, ale stojí čas. Nevkládej sem další otrávenou zásilku ani samostatný povinný důkaz.",
+      "guideKey": "location-manor",
+      "anchor": "l01"
+    },
+    {
+      "sceneId": "manor",
+      "roomId": "kitchen",
+      "description": "Na pracovních stolech zůstaly nádoby, krájecí prkénka a zásoby. Domácí práce pokračují i během smutku; odtud se nosí jídlo do jídelny.",
+      "notes": "Kuchařský provoz může dosvědčit pouze skutečně viděné přesuny služebnictva. Rozliš běžné zásoby od Lenčiny léčivé zásilky. Žádné nové svědectví samo nezná celý plán.",
+      "guideKey": "location-manor",
+      "anchor": "l04"
+    },
+    {
+      "sceneId": "manor",
+      "roomId": "medicine",
+      "description": "Malý uzavíratelný sklad s policemi, obaly a nádobkami připravenými k vrácení. Příjemky jsou uložené u zásilek.",
+      "notes": "Provozní sklad patří k L04. Původní Lenčin balíček č. 208 je mezi měsíčními vratkami; použitou lahvičku uchovává Adéla. Zpřístupni jen tu část D04, kterou skupina skutečně prohlédla.",
+      "guideKey": "location-manor",
+      "anchor": "l04"
+    },
+    {
+      "sceneId": "manor",
+      "roomId": "hall",
+      "description": "Hlavní chodba spojuje přijímací pokoje, provozní trakt a krytý průchod ke stájím. Na západním konci je hlavní schodiště.",
+      "notes": "Prostor přesunů a případných setkání. Určuj skutečnou polohu svědků a dohled přes dveře; samotná přítomnost v chodbě neznamená slyšet každý rozhovor v uzavřených pokojích.",
+      "guideKey": "location-manor",
+      "anchor": "l01"
+    },
+    {
+      "sceneId": "manor",
+      "roomId": "gallery",
+      "description": "V galerii stojí rodinná socha a visí portréty několika generací. Odtud vede hlavní vstup do sídla a cesta do chodby.",
+      "notes": "Portréty pomáhají rozlišit členy rodu a ukotvit rozhovory. Samy neurčují viníka. Vstupní cesta zůstává fyzickou cestou: zohledni dveře a skutečný pohyb NPC.",
+      "guideKey": "location-manor",
+      "anchor": "l01"
+    },
+    {
+      "sceneId": "manor",
+      "roomId": "L04",
+      "description": "Na pracovním stole leží úhledné rozpisy. Vedle stojí bedna a vyčištěné lahvičky k vrácení. Pod oknem pokračuje odtokový žlab do služebního dvora.",
+      "notes": "Kordovo pracoviště. V 11:00 zde může roztrhat pokyn D15 a shodit jej oknem. Vydání falešného rozpisu D16 a jeho doručení Havlovi jsou dvě různé skutečnosti. Zajištěný papír neodvolá již doručený rozkaz.",
+      "guideKey": "location-manor",
+      "anchor": "l04"
+    },
+    {
+      "sceneId": "manor",
+      "roomId": "service",
+      "description": "Služební zázemí s odloženou výbavou, pracovním stolem a místem na krátký odpočinek. Východní průchod vede ke služebnímu vstupu.",
+      "notes": "Zde sleduj službu, zásilky a přístup k brance. Darek není uvnitř jen proto, že dorazil ven. Změna stráže, otevření branky a jeho skutečný vstup mají vlastní podmínky.",
+      "guideKey": "location-manor",
+      "anchor": "l04"
+    },
+    {
+      "sceneId": "manor",
+      "roomId": "L03",
+      "description": "Ve stáji neklidně přešlapuje kůň. Běla má obvázaný prst. U vrat jsou čerstvé křídové značky a zavěšené byliny; poškozené sedlo je odložené zvlášť.",
+      "notes": "D01, D12 a D14 mají nezávislé zdroje. Běla v 09:00 přesune výstroj, ale nezničí důkaz. Význam křídy neprozrazuj při prvním pohledu; její stáří a Bělin záměr se zjišťují až rozhovorem a ověřením.",
+      "guideKey": "location-manor",
+      "anchor": "l03"
+    },
+    {
+      "sceneId": "manor",
+      "roomId": "passage",
+      "description": "Krátké kryté spojení vede ze stáje k hlavní chodbě sídla. Podlaha nese běžné stopy provozu a péče o koně.",
+      "notes": "Je to skutečná cesta mezi L03 a sídlem. Duše využije otevřený průchod, ale sama neotevře zavřené dveře. Přesun nemá odhalit obsah kanceláře ani nahradit prohlídku sedla.",
+      "guideKey": "location-manor",
+      "anchor": "l03"
+    },
+    {
+      "sceneId": "manor",
+      "roomId": "library",
+      "description": "Police s knihami, rodinné svazky a místa k tichému čtení. Pokoj navazuje na patrovou chodbu.",
+      "notes": "Rodinné podklady zpřístupňuje Otovo pověření. Vilémův spor D13 je skutečný majetkový spor; nepředkládej jej jako vysvětlení ostatních úmrtí. Čtení a cílené dohledávání stojí čas.",
+      "guideKey": "location-manor",
+      "anchor": "l01"
+    },
+    {
+      "sceneId": "manor",
+      "roomId": "L02",
+      "description": "Adéla skládá synovy dopisy. Na stole je vidět jeho poslední poznámka o opravě jízdního sedla. Salonek má vstupy do hlavní i služební části patra.",
+      "notes": "D04, D05 a D11 se získávají skutečnou prohlídkou nebo rozhovorem. Dnešní program Adély lze změnit. Večerní pokus závisí na její poloze, vstupu Dareka a účinné ochraně celé cesty; událost sama neurčuje její smrt.",
+      "guideKey": "location-manor",
+      "anchor": "l02"
+    },
+    {
+      "sceneId": "manor",
+      "roomId": "stairHall",
+      "description": "Malý patrový prostor kolem služebního schodiště. Dveře vedou do chodby, salonku a rodinné kaple.",
+      "notes": "Druhá skutečná cesta mezi patry. Při ochraně Adély zohledni, kdo ovládá tuto cestu a otevřené dveře. Schodiště není náhradní tajný vstup pro člověka, který ještě neprošel brankou.",
+      "guideKey": "location-manor",
+      "anchor": "l02"
+    },
+    {
+      "sceneId": "manor",
+      "roomId": "chapel",
+      "description": "V rodinné kapli je klid. Na místě pro rozloučení leží svíce a květiny; cesta zpět vede přes služební schodišťovou síň.",
+      "notes": "Adéla přichází podle programu v 10:00, pokud se nedohodla jinak. Pozdní pokus vyžaduje novou osobní domluvu po 18:00 a skutečné splnění podmínek. Úspěšnou záchranu neruš automatickým dalším útokem.",
+      "guideKey": "location-manor",
+      "anchor": "l02"
+    },
+    {
+      "sceneId": "manor",
+      "roomId": "upperHall",
+      "description": "Patrová chodba spojuje knihovnu, rodinné pokoje, salonek a služební schodiště. Nad hlavním schodištěm zůstává otevřený prostor.",
+      "notes": "Sleduj, kdo může skutečně vidět nebo zaslechnout dění u salonku. Příchod v průběhu útoku může otevřít reakci; čas se nevrací a již dokončené akce se neopakují.",
+      "guideKey": "event-E11"
+    },
+    {
+      "sceneId": "manor",
+      "roomId": "family",
+      "description": "Rodinné pokoje jsou uklizené a tišší než ostatní části domu. Zůstaly v nich osobní předměty a místa, která nikdo nově neobsadil.",
+      "notes": "Osobní věci mohou pomoci identifikaci a vzpomínkám; nejsou automaticky další důkazy. Připomínej ztrátu rodiny střídmě. Pro ověřitelné okolnosti úmrtí odkazuj na připravené listiny a svědky.",
+      "guideKey": "truth-family"
+    },
+    {
+      "sceneId": "manor",
+      "roomId": "bedroom",
+      "description": "Ložnice s rodinným nábytkem a uzavřenými úložnými místy. Z pokoje se vychází na patrovou chodbu.",
+      "notes": "Soukromý prostor není automaticky bezpečné místo. Dohodnutou ochranu vyhodnoť podle přístupů a přítomných lidí; samotné přemístění Adély bez zabezpečení cesty nevyřeší vše.",
+      "guideKey": "location-manor",
+      "anchor": "l02"
+    },
+    {
+      "sceneId": "manor",
+      "roomId": "upperGallery",
+      "description": "Patrový ochoz a klidné místo stranou hlavní chodby. Je odtud vidět část vnějšího okolí sídla.",
+      "notes": "Vhodné místo pro rozhovor nebo pozorování v rozsahu skutečného výhledu. Žádný svědek odtud automaticky nevidí vše v přízemí nebo uvnitř salonku.",
+      "guideKey": "location-manor",
+      "anchor": "l02"
+    },
+    {
+      "sceneId": "guild",
+      "roomId": "meeting",
+      "description": "Oddělená poradna s místy k sezení a pracovním stolem. Za zavřenými dveřmi sem z veřejné síně doléhá jen tlumený ruch.",
+      "notes": "Porada E07 začíná ve 14:00 podle skutečné účasti. Není v místnosti s krystalem. Průpis č. 242 vznikne až dokončením porady; přerušení dříve vydané pokyny samo nevymaže.",
+      "guideKey": "event-E07"
+    },
+    {
+      "sceneId": "guild",
+      "roomId": "L06",
+      "description": "Ve veřejné síni se vrací výstroj, řeší doplatky a čtou běžné zakázky. Ruch působí téměř hospodsky; zadní trakt oddělují dveře a přepážka.",
+      "notes": "Veřejný výpis D08 je dostupný běžným dotazem. Drby archivuj až jako skutečně získané a připsané výpovědi. Tereza má svůj program; kontakt ji nepřivolá z jiného místa.",
+      "guideKey": "location-guild",
+      "anchor": "l06"
+    },
+    {
+      "sceneId": "guild",
+      "roomId": "L07",
+      "description": "Úzké uličky mezi regály, číselné indexy a listy s opravami a podpisy. Archivářský stůl zůstává pracovištěm, nikoli slavnostním místem.",
+      "notes": "D09 a D10 potřebují vlastní přístup. Oprávněný přezkum konkrétní práce stojí 30 minut; vedou sem i důvěra Idy a služební cesta. R-17 samo neprokazuje zločin. Policové dveře D19 neoznačuj hráčům před jejich zjištěním.",
+      "guideKey": "location-guild",
+      "anchor": "l07"
+    },
+    {
+      "sceneId": "guild",
+      "roomId": "L08",
+      "description": "Uklizený pracovní stůl, portrétní miniatura mladé Adély a zavřená dřevěná skříňka. Kolem leží několik drobných osobních předmětů.",
+      "notes": "Vstup vyžaduje skutečně překonané dveře nebo oprávnění. Obsah skříňky není vidět skrz víko; další zámek nemá. Zajištění dostupného krystalu v klidu trvá 5 minut. Izolace neruší již předané pokyny a Armand své jednání nepřizná bez odporu.",
+      "guideKey": "location-guild",
+      "anchor": "l08"
+    },
+    {
+      "sceneId": "guild",
+      "roomId": "serviceHall",
+      "description": "Zásobovací chodba propojuje veřejný provoz se zadní částí cechu. U služebního vstupu zůstává prostor pro přenášení beden a svazků.",
+      "notes": "Služební přístup do archivu je běžně otevřený 12:30–13:00. Nenápadný třicetiminutový vstup musí začít včas. Provozní cesta neotevírá současně dveře do soukromé komnaty.",
+      "guideKey": "location-guild",
+      "anchor": "l07"
+    },
+    {
+      "sceneId": "curve",
+      "roomId": "scene",
+      "description": "Úzká cesta nad kamenitým svahem a nedávno rozrytá půda. U místa pádu leží pohřební květina. Za balvanem zůstala šňůra a kovová destička.",
+      "notes": "D02 se skládá z konkrétních stop, výstroje a svědectví. Odpolední déšť oslabí jemné venkovní stopy, ale nezničí celý případ. Tereza je zde dosažitelná jen podle své skutečné cesty a programu.",
+      "guideKey": "location-bend",
+      "anchor": "l05"
+    }
+  ],
   "preparation": {
     "summary": "Rod Tétů přichází o své členy při zdánlivě nesouvisejících neštěstích. Po včerejší smrti nejstaršího syna Viktora žádá baron Oto pomoc: věří, že rod pronásleduje kletba. Výprava má jediný den, od 08:00 do 20:00, aby spojila stopy ze sídla, Havraního zákrutu a cechu. Adéla stále žije; dnešní zásahy mohou její osud změnit.",
     "truth": "Armand Veyr se nikdy nesmířil s tím, že si Adéla vybrala Ota. Hmotný úlomek Zkázy, ukrytý v jeho soukromé části cechu, posiluje jeho zášť, aniž si Armand uvědomuje posedlost. Své postavení využívá k vražedným zakázkám; správce Matěj Korda vědomě pomáhá jejich provedení. Najatí dobrodruzi znají různé části úkolů. Získání krystalu samo neodhalí celý řetězec odpovědnosti a nezruší již předané pokyny.",
@@ -5719,6 +5910,120 @@
           "guideGroupName": "Pravidla a výbava",
           "guideGroupOrder": 6,
           "guideCategoryId": "1e16a7836943dc2f"
+        }
+      }
+    },
+    {
+      "_id": "30b0db8774b862eb",
+      "name": "Tétové · sídlo · místnosti",
+      "type": "text",
+      "sort": 399000,
+      "category": "095c0c18ed8e3f74",
+      "ownership": {
+        "default": 0
+      },
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "text": {
+        "format": 1,
+        "content": "<div class=\"pms-case-guide-content\"><section class=\"pms-room-brief\"><h2 id=\"room-L01\">Přijímací síň</h2><h3 id=\"room-L01-description\">Na první pohled</h3><blockquote class=\"pms-guide-player-text\"><p>Portréty rodu, připravené židle a tři smuteční stuhy na stole. Za oknem stojí pohřební vůz. Oto raději zůstává stát; Korda nabízí pomoc.</p></blockquote><h3 id=\"room-L01-gm\">Pro vypravěče</h3><p>Zde začíná společná audience v 08:00. Oto předá pověření, popíše úmrtí a umožní prohlídku domácnosti. Jeho přesvědčení o kletbě je výpověď, nikoli závěr vyšetřování.</p><p><a class=\"pms-guide-link\" role=\"button\" tabindex=\"0\" data-action=\"goToHeading\" data-page-id=\"31567381e4886025\" data-anchor=\"l01\">Podrobná příprava lokace</a></p></section>\n<section class=\"pms-room-brief\"><h2 id=\"room-dining\">Jídelna</h2><h3 id=\"room-dining-description\">Na první pohled</h3><blockquote class=\"pms-guide-player-text\"><p>Dlouhý jídelní stůl je připravený pro méně lidí, než kolik se jich vejde na okolní židle. Služební dveře spojují jídelnu s provozem domácnosti.</p></blockquote><h3 id=\"room-dining-gm\">Pro vypravěče</h3><p>Místo běžného domácího setkání a případného jídla. Jídlo může obnovit vitálky podle pravidel, ale stojí čas. Nevkládej sem další otrávenou zásilku ani samostatný povinný důkaz.</p><p><a class=\"pms-guide-link\" role=\"button\" tabindex=\"0\" data-action=\"goToHeading\" data-page-id=\"31567381e4886025\" data-anchor=\"l01\">Podrobná příprava lokace</a></p></section>\n<section class=\"pms-room-brief\"><h2 id=\"room-kitchen\">Kuchyně</h2><h3 id=\"room-kitchen-description\">Na první pohled</h3><blockquote class=\"pms-guide-player-text\"><p>Na pracovních stolech zůstaly nádoby, krájecí prkénka a zásoby. Domácí práce pokračují i během smutku; odtud se nosí jídlo do jídelny.</p></blockquote><h3 id=\"room-kitchen-gm\">Pro vypravěče</h3><p>Kuchařský provoz může dosvědčit pouze skutečně viděné přesuny služebnictva. Rozliš běžné zásoby od Lenčiny léčivé zásilky. Žádné nové svědectví samo nezná celý plán.</p><p><a class=\"pms-guide-link\" role=\"button\" tabindex=\"0\" data-action=\"goToHeading\" data-page-id=\"31567381e4886025\" data-anchor=\"l04\">Podrobná příprava lokace</a></p></section>\n<section class=\"pms-room-brief\"><h2 id=\"room-medicine\">Sklad léčiv</h2><h3 id=\"room-medicine-description\">Na první pohled</h3><blockquote class=\"pms-guide-player-text\"><p>Malý uzavíratelný sklad s policemi, obaly a nádobkami připravenými k vrácení. Příjemky jsou uložené u zásilek.</p></blockquote><h3 id=\"room-medicine-gm\">Pro vypravěče</h3><p>Provozní sklad patří k L04. Původní Lenčin balíček č. 208 je mezi měsíčními vratkami; použitou lahvičku uchovává Adéla. Zpřístupni jen tu část D04, kterou skupina skutečně prohlédla.</p><p><a class=\"pms-guide-link\" role=\"button\" tabindex=\"0\" data-action=\"goToHeading\" data-page-id=\"31567381e4886025\" data-anchor=\"l04\">Podrobná příprava lokace</a></p></section>\n<section class=\"pms-room-brief\"><h2 id=\"room-hall\">Hlavní chodba</h2><h3 id=\"room-hall-description\">Na první pohled</h3><blockquote class=\"pms-guide-player-text\"><p>Hlavní chodba spojuje přijímací pokoje, provozní trakt a krytý průchod ke stájím. Na západním konci je hlavní schodiště.</p></blockquote><h3 id=\"room-hall-gm\">Pro vypravěče</h3><p>Prostor přesunů a případných setkání. Určuj skutečnou polohu svědků a dohled přes dveře; samotná přítomnost v chodbě neznamená slyšet každý rozhovor v uzavřených pokojích.</p><p><a class=\"pms-guide-link\" role=\"button\" tabindex=\"0\" data-action=\"goToHeading\" data-page-id=\"31567381e4886025\" data-anchor=\"l01\">Podrobná příprava lokace</a></p></section>\n<section class=\"pms-room-brief\"><h2 id=\"room-gallery\">Galerie</h2><h3 id=\"room-gallery-description\">Na první pohled</h3><blockquote class=\"pms-guide-player-text\"><p>V galerii stojí rodinná socha a visí portréty několika generací. Odtud vede hlavní vstup do sídla a cesta do chodby.</p></blockquote><h3 id=\"room-gallery-gm\">Pro vypravěče</h3><p>Portréty pomáhají rozlišit členy rodu a ukotvit rozhovory. Samy neurčují viníka. Vstupní cesta zůstává fyzickou cestou: zohledni dveře a skutečný pohyb NPC.</p><p><a class=\"pms-guide-link\" role=\"button\" tabindex=\"0\" data-action=\"goToHeading\" data-page-id=\"31567381e4886025\" data-anchor=\"l01\">Podrobná příprava lokace</a></p></section>\n<section class=\"pms-room-brief\"><h2 id=\"room-L04\">Správcova kancelář</h2><h3 id=\"room-L04-description\">Na první pohled</h3><blockquote class=\"pms-guide-player-text\"><p>Na pracovním stole leží úhledné rozpisy. Vedle stojí bedna a vyčištěné lahvičky k vrácení. Pod oknem pokračuje odtokový žlab do služebního dvora.</p></blockquote><h3 id=\"room-L04-gm\">Pro vypravěče</h3><p>Kordovo pracoviště. V 11:00 zde může roztrhat pokyn D15 a shodit jej oknem. Vydání falešného rozpisu D16 a jeho doručení Havlovi jsou dvě různé skutečnosti. Zajištěný papír neodvolá již doručený rozkaz.</p><p><a class=\"pms-guide-link\" role=\"button\" tabindex=\"0\" data-action=\"goToHeading\" data-page-id=\"31567381e4886025\" data-anchor=\"l04\">Podrobná příprava lokace</a></p></section>\n<section class=\"pms-room-brief\"><h2 id=\"room-service\">Služební zázemí</h2><h3 id=\"room-service-description\">Na první pohled</h3><blockquote class=\"pms-guide-player-text\"><p>Služební zázemí s odloženou výbavou, pracovním stolem a místem na krátký odpočinek. Východní průchod vede ke služebnímu vstupu.</p></blockquote><h3 id=\"room-service-gm\">Pro vypravěče</h3><p>Zde sleduj službu, zásilky a přístup k brance. Darek není uvnitř jen proto, že dorazil ven. Změna stráže, otevření branky a jeho skutečný vstup mají vlastní podmínky.</p><p><a class=\"pms-guide-link\" role=\"button\" tabindex=\"0\" data-action=\"goToHeading\" data-page-id=\"31567381e4886025\" data-anchor=\"l04\">Podrobná příprava lokace</a></p></section>\n<section class=\"pms-room-brief\"><h2 id=\"room-L03\">Stáje</h2><h3 id=\"room-L03-description\">Na první pohled</h3><blockquote class=\"pms-guide-player-text\"><p>Ve stáji neklidně přešlapuje kůň. Běla má obvázaný prst. U vrat jsou čerstvé křídové značky a zavěšené byliny; poškozené sedlo je odložené zvlášť.</p></blockquote><h3 id=\"room-L03-gm\">Pro vypravěče</h3><p>D01, D12 a D14 mají nezávislé zdroje. Běla v 09:00 přesune výstroj, ale nezničí důkaz. Význam křídy neprozrazuj při prvním pohledu; její stáří a Bělin záměr se zjišťují až rozhovorem a ověřením.</p><p><a class=\"pms-guide-link\" role=\"button\" tabindex=\"0\" data-action=\"goToHeading\" data-page-id=\"31567381e4886025\" data-anchor=\"l03\">Podrobná příprava lokace</a></p></section>\n<section class=\"pms-room-brief\"><h2 id=\"room-passage\">Kryté spojení</h2><h3 id=\"room-passage-description\">Na první pohled</h3><blockquote class=\"pms-guide-player-text\"><p>Krátké kryté spojení vede ze stáje k hlavní chodbě sídla. Podlaha nese běžné stopy provozu a péče o koně.</p></blockquote><h3 id=\"room-passage-gm\">Pro vypravěče</h3><p>Je to skutečná cesta mezi L03 a sídlem. Duše využije otevřený průchod, ale sama neotevře zavřené dveře. Přesun nemá odhalit obsah kanceláře ani nahradit prohlídku sedla.</p><p><a class=\"pms-guide-link\" role=\"button\" tabindex=\"0\" data-action=\"goToHeading\" data-page-id=\"31567381e4886025\" data-anchor=\"l03\">Podrobná příprava lokace</a></p></section>\n<section class=\"pms-room-brief\"><h2 id=\"room-library\">Rodinná knihovna</h2><h3 id=\"room-library-description\">Na první pohled</h3><blockquote class=\"pms-guide-player-text\"><p>Police s knihami, rodinné svazky a místa k tichému čtení. Pokoj navazuje na patrovou chodbu.</p></blockquote><h3 id=\"room-library-gm\">Pro vypravěče</h3><p>Rodinné podklady zpřístupňuje Otovo pověření. Vilémův spor D13 je skutečný majetkový spor; nepředkládej jej jako vysvětlení ostatních úmrtí. Čtení a cílené dohledávání stojí čas.</p><p><a class=\"pms-guide-link\" role=\"button\" tabindex=\"0\" data-action=\"goToHeading\" data-page-id=\"31567381e4886025\" data-anchor=\"l01\">Podrobná příprava lokace</a></p></section>\n<section class=\"pms-room-brief\"><h2 id=\"room-L02\">Adélin salonek</h2><h3 id=\"room-L02-description\">Na první pohled</h3><blockquote class=\"pms-guide-player-text\"><p>Adéla skládá synovy dopisy. Na stole je vidět jeho poslední poznámka o opravě jízdního sedla. Salonek má vstupy do hlavní i služební části patra.</p></blockquote><h3 id=\"room-L02-gm\">Pro vypravěče</h3><p>D04, D05 a D11 se získávají skutečnou prohlídkou nebo rozhovorem. Dnešní program Adély lze změnit. Večerní pokus závisí na její poloze, vstupu Dareka a účinné ochraně celé cesty; událost sama neurčuje její smrt.</p><p><a class=\"pms-guide-link\" role=\"button\" tabindex=\"0\" data-action=\"goToHeading\" data-page-id=\"31567381e4886025\" data-anchor=\"l02\">Podrobná příprava lokace</a></p></section>\n<section class=\"pms-room-brief\"><h2 id=\"room-stairHall\">Služební schodiště</h2><h3 id=\"room-stairHall-description\">Na první pohled</h3><blockquote class=\"pms-guide-player-text\"><p>Malý patrový prostor kolem služebního schodiště. Dveře vedou do chodby, salonku a rodinné kaple.</p></blockquote><h3 id=\"room-stairHall-gm\">Pro vypravěče</h3><p>Druhá skutečná cesta mezi patry. Při ochraně Adély zohledni, kdo ovládá tuto cestu a otevřené dveře. Schodiště není náhradní tajný vstup pro člověka, který ještě neprošel brankou.</p><p><a class=\"pms-guide-link\" role=\"button\" tabindex=\"0\" data-action=\"goToHeading\" data-page-id=\"31567381e4886025\" data-anchor=\"l02\">Podrobná příprava lokace</a></p></section>\n<section class=\"pms-room-brief\"><h2 id=\"room-chapel\">Rodinná kaple</h2><h3 id=\"room-chapel-description\">Na první pohled</h3><blockquote class=\"pms-guide-player-text\"><p>V rodinné kapli je klid. Na místě pro rozloučení leží svíce a květiny; cesta zpět vede přes služební schodišťovou síň.</p></blockquote><h3 id=\"room-chapel-gm\">Pro vypravěče</h3><p>Adéla přichází podle programu v 10:00, pokud se nedohodla jinak. Pozdní pokus vyžaduje novou osobní domluvu po 18:00 a skutečné splnění podmínek. Úspěšnou záchranu neruš automatickým dalším útokem.</p><p><a class=\"pms-guide-link\" role=\"button\" tabindex=\"0\" data-action=\"goToHeading\" data-page-id=\"31567381e4886025\" data-anchor=\"l02\">Podrobná příprava lokace</a></p></section>\n<section class=\"pms-room-brief\"><h2 id=\"room-upperHall\">Patrová chodba</h2><h3 id=\"room-upperHall-description\">Na první pohled</h3><blockquote class=\"pms-guide-player-text\"><p>Patrová chodba spojuje knihovnu, rodinné pokoje, salonek a služební schodiště. Nad hlavním schodištěm zůstává otevřený prostor.</p></blockquote><h3 id=\"room-upperHall-gm\">Pro vypravěče</h3><p>Sleduj, kdo může skutečně vidět nebo zaslechnout dění u salonku. Příchod v průběhu útoku může otevřít reakci; čas se nevrací a již dokončené akce se neopakují.</p><p><a class=\"pms-guide-link\" role=\"button\" tabindex=\"0\" data-action=\"goToHeading\" data-page-id=\"924e21b6d9b2a272\">Podrobná příprava lokace</a></p></section>\n<section class=\"pms-room-brief\"><h2 id=\"room-family\">Rodinné pokoje</h2><h3 id=\"room-family-description\">Na první pohled</h3><blockquote class=\"pms-guide-player-text\"><p>Rodinné pokoje jsou uklizené a tišší než ostatní části domu. Zůstaly v nich osobní předměty a místa, která nikdo nově neobsadil.</p></blockquote><h3 id=\"room-family-gm\">Pro vypravěče</h3><p>Osobní věci mohou pomoci identifikaci a vzpomínkám; nejsou automaticky další důkazy. Připomínej ztrátu rodiny střídmě. Pro ověřitelné okolnosti úmrtí odkazuj na připravené listiny a svědky.</p><p><a class=\"pms-guide-link\" role=\"button\" tabindex=\"0\" data-action=\"goToHeading\" data-page-id=\"613f3a8af34aec7e\">Podrobná příprava lokace</a></p></section>\n<section class=\"pms-room-brief\"><h2 id=\"room-bedroom\">Ložnice</h2><h3 id=\"room-bedroom-description\">Na první pohled</h3><blockquote class=\"pms-guide-player-text\"><p>Ložnice s rodinným nábytkem a uzavřenými úložnými místy. Z pokoje se vychází na patrovou chodbu.</p></blockquote><h3 id=\"room-bedroom-gm\">Pro vypravěče</h3><p>Soukromý prostor není automaticky bezpečné místo. Dohodnutou ochranu vyhodnoť podle přístupů a přítomných lidí; samotné přemístění Adély bez zabezpečení cesty nevyřeší vše.</p><p><a class=\"pms-guide-link\" role=\"button\" tabindex=\"0\" data-action=\"goToHeading\" data-page-id=\"31567381e4886025\" data-anchor=\"l02\">Podrobná příprava lokace</a></p></section>\n<section class=\"pms-room-brief\"><h2 id=\"room-upperGallery\">Ochoz</h2><h3 id=\"room-upperGallery-description\">Na první pohled</h3><blockquote class=\"pms-guide-player-text\"><p>Patrový ochoz a klidné místo stranou hlavní chodby. Je odtud vidět část vnějšího okolí sídla.</p></blockquote><h3 id=\"room-upperGallery-gm\">Pro vypravěče</h3><p>Vhodné místo pro rozhovor nebo pozorování v rozsahu skutečného výhledu. Žádný svědek odtud automaticky nevidí vše v přízemí nebo uvnitř salonku.</p><p><a class=\"pms-guide-link\" role=\"button\" tabindex=\"0\" data-action=\"goToHeading\" data-page-id=\"31567381e4886025\" data-anchor=\"l02\">Podrobná příprava lokace</a></p></section></div>"
+      },
+      "flags": {
+        "pms": {
+          "guideCategoryId": "095c0c18ed8e3f74",
+          "guideGroupName": "Lokace",
+          "guideGroupOrder": 2,
+          "guideKey": "room-guide-manor",
+          "guideGroup": "locations",
+          "roomSceneId": "manor",
+          "roomIds": [
+            "L01",
+            "dining",
+            "kitchen",
+            "medicine",
+            "hall",
+            "gallery",
+            "L04",
+            "service",
+            "L03",
+            "passage",
+            "library",
+            "L02",
+            "stairHall",
+            "chapel",
+            "upperHall",
+            "family",
+            "bedroom",
+            "upperGallery"
+          ]
+        }
+      }
+    },
+    {
+      "_id": "286b9cc96489c8ad",
+      "name": "Tétové · Havraní zákrut · místnosti",
+      "type": "text",
+      "sort": 399000,
+      "category": "095c0c18ed8e3f74",
+      "ownership": {
+        "default": 0
+      },
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "text": {
+        "format": 1,
+        "content": "<div class=\"pms-case-guide-content\"><section class=\"pms-room-brief\"><h2 id=\"room-scene\">Tétové · Havraní zákrut</h2><h3 id=\"room-scene-description\">Na první pohled</h3><blockquote class=\"pms-guide-player-text\"><p>Úzká cesta nad kamenitým svahem a nedávno rozrytá půda. U místa pádu leží pohřební květina. Za balvanem zůstala šňůra a kovová destička.</p></blockquote><h3 id=\"room-scene-gm\">Pro vypravěče</h3><p>D02 se skládá z konkrétních stop, výstroje a svědectví. Odpolední déšť oslabí jemné venkovní stopy, ale nezničí celý případ. Tereza je zde dosažitelná jen podle své skutečné cesty a programu.</p><p><a class=\"pms-guide-link\" role=\"button\" tabindex=\"0\" data-action=\"goToHeading\" data-page-id=\"f8ce0c3b19de2aa7\" data-anchor=\"l05\">Podrobná příprava lokace</a></p></section></div>"
+      },
+      "flags": {
+        "pms": {
+          "guideCategoryId": "095c0c18ed8e3f74",
+          "guideGroupName": "Lokace",
+          "guideGroupOrder": 2,
+          "guideKey": "room-guide-curve",
+          "guideGroup": "locations",
+          "roomSceneId": "curve",
+          "roomIds": [
+            "scene"
+          ]
+        }
+      }
+    },
+    {
+      "_id": "d03d78895ffc5395",
+      "name": "Tétové · cech · místnosti",
+      "type": "text",
+      "sort": 399000,
+      "category": "095c0c18ed8e3f74",
+      "ownership": {
+        "default": 0
+      },
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "text": {
+        "format": 1,
+        "content": "<div class=\"pms-case-guide-content\"><section class=\"pms-room-brief\"><h2 id=\"room-meeting\">Poradna</h2><h3 id=\"room-meeting-description\">Na první pohled</h3><blockquote class=\"pms-guide-player-text\"><p>Oddělená poradna s místy k sezení a pracovním stolem. Za zavřenými dveřmi sem z veřejné síně doléhá jen tlumený ruch.</p></blockquote><h3 id=\"room-meeting-gm\">Pro vypravěče</h3><p>Porada E07 začíná ve 14:00 podle skutečné účasti. Není v místnosti s krystalem. Průpis č. 242 vznikne až dokončením porady; přerušení dříve vydané pokyny samo nevymaže.</p><p><a class=\"pms-guide-link\" role=\"button\" tabindex=\"0\" data-action=\"goToHeading\" data-page-id=\"144b1cc5d3b05a69\">Podrobná příprava lokace</a></p></section>\n<section class=\"pms-room-brief\"><h2 id=\"room-L06\">Veřejná cechovní síň</h2><h3 id=\"room-L06-description\">Na první pohled</h3><blockquote class=\"pms-guide-player-text\"><p>Ve veřejné síni se vrací výstroj, řeší doplatky a čtou běžné zakázky. Ruch působí téměř hospodsky; zadní trakt oddělují dveře a přepážka.</p></blockquote><h3 id=\"room-L06-gm\">Pro vypravěče</h3><p>Veřejný výpis D08 je dostupný běžným dotazem. Drby archivuj až jako skutečně získané a připsané výpovědi. Tereza má svůj program; kontakt ji nepřivolá z jiného místa.</p><p><a class=\"pms-guide-link\" role=\"button\" tabindex=\"0\" data-action=\"goToHeading\" data-page-id=\"509fa67b3a6e2fc7\" data-anchor=\"l06\">Podrobná příprava lokace</a></p></section>\n<section class=\"pms-room-brief\"><h2 id=\"room-L07\">Archiv</h2><h3 id=\"room-L07-description\">Na první pohled</h3><blockquote class=\"pms-guide-player-text\"><p>Úzké uličky mezi regály, číselné indexy a listy s opravami a podpisy. Archivářský stůl zůstává pracovištěm, nikoli slavnostním místem.</p></blockquote><h3 id=\"room-L07-gm\">Pro vypravěče</h3><p>D09 a D10 potřebují vlastní přístup. Oprávněný přezkum konkrétní práce stojí 30 minut; vedou sem i důvěra Idy a služební cesta. R-17 samo neprokazuje zločin. Policové dveře D19 neoznačuj hráčům před jejich zjištěním.</p><p><a class=\"pms-guide-link\" role=\"button\" tabindex=\"0\" data-action=\"goToHeading\" data-page-id=\"509fa67b3a6e2fc7\" data-anchor=\"l07\">Podrobná příprava lokace</a></p></section>\n<section class=\"pms-room-brief\"><h2 id=\"room-L08\">Soukromá komnata</h2><h3 id=\"room-L08-description\">Na první pohled</h3><blockquote class=\"pms-guide-player-text\"><p>Uklizený pracovní stůl, portrétní miniatura mladé Adély a zavřená dřevěná skříňka. Kolem leží několik drobných osobních předmětů.</p></blockquote><h3 id=\"room-L08-gm\">Pro vypravěče</h3><p>Vstup vyžaduje skutečně překonané dveře nebo oprávnění. Obsah skříňky není vidět skrz víko; další zámek nemá. Zajištění dostupného krystalu v klidu trvá 5 minut. Izolace neruší již předané pokyny a Armand své jednání nepřizná bez odporu.</p><p><a class=\"pms-guide-link\" role=\"button\" tabindex=\"0\" data-action=\"goToHeading\" data-page-id=\"509fa67b3a6e2fc7\" data-anchor=\"l08\">Podrobná příprava lokace</a></p></section>\n<section class=\"pms-room-brief\"><h2 id=\"room-serviceHall\">Zásobovací chodba</h2><h3 id=\"room-serviceHall-description\">Na první pohled</h3><blockquote class=\"pms-guide-player-text\"><p>Zásobovací chodba propojuje veřejný provoz se zadní částí cechu. U služebního vstupu zůstává prostor pro přenášení beden a svazků.</p></blockquote><h3 id=\"room-serviceHall-gm\">Pro vypravěče</h3><p>Služební přístup do archivu je běžně otevřený 12:30–13:00. Nenápadný třicetiminutový vstup musí začít včas. Provozní cesta neotevírá současně dveře do soukromé komnaty.</p><p><a class=\"pms-guide-link\" role=\"button\" tabindex=\"0\" data-action=\"goToHeading\" data-page-id=\"509fa67b3a6e2fc7\" data-anchor=\"l07\">Podrobná příprava lokace</a></p></section></div>"
+      },
+      "flags": {
+        "pms": {
+          "guideCategoryId": "095c0c18ed8e3f74",
+          "guideGroupName": "Lokace",
+          "guideGroupOrder": 2,
+          "guideKey": "room-guide-guild",
+          "guideGroup": "locations",
+          "roomSceneId": "guild",
+          "roomIds": [
+            "meeting",
+            "L06",
+            "L07",
+            "L08",
+            "serviceHall"
+          ]
         }
       }
     }

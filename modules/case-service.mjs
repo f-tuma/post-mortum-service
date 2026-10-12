@@ -41,6 +41,7 @@ export class PMSCaseJournal extends foundry.applications.sheets.journal.JournalE
   // Only a local GM view: Foundry v14 sends world documents regardless of sidebar ownership.
   const journal=new JournalEntry({name:`${data.title} · ${options.preparation?'příprava na sezení':'příručka vypravěče'}`,ownership:{default:0},categories,flags:{core:{locked:true,viewMode:1}},pages});
   super({...options,document:journal});
+  this.caseData=data;
  }
  async _onFirstRender(context,options){await super._onFirstRender(context,options);this.setPosition(firstSheetPosition(this.position,window.innerWidth,window.innerHeight));}
  async _onRender(context,options){await super._onRender(context,options);bindFoundryNavigation(this.element);}
@@ -95,7 +96,7 @@ export class CaseService {
  forCase(id){return game.user.isGM&&!caseRemoved(id)?this.definitions.get(id)??null:null;}
  definitionFor(id){const authored=this.forCase(id),runtime=this.runtimeDefinitions.get(id);return authored?correctTetovePublicText({...authored,...(runtime&&!(authored.initialSnapshot&&authored.contentVersion>runtime.contentVersion)?runtime:{})}):null;}
  get availableCases(){return game.user.isGM?[...this.definitions.values()].filter(d=>!caseRemoved(d.id)).map(d=>({id:d.id,title:d.title})):[];}
- async reloadDefinition(id){if(!game.user.isGM)return null;assertCaseAvailable(id);const vault=game.journal.find(d=>marked(d,'kind')==='caseVault'&&marked(d,'caseId')===id);if(!vault)return this.forCase(id);const data=validateCase(await this.visits.unseal(marked(vault,'sealed')));this.definitions.set(id,data);return data;}
+ async reloadDefinition(id){if(!game.user.isGM)return null;assertCaseAvailable(id);const vault=game.journal.find(d=>marked(d,'kind')==='caseVault'&&marked(d,'caseId')===id);if(!vault)return this.forCase(id);const sealed=marked(vault,'sealed'),revision=marked(vault,'editorRevision')??0;let data=validateCase(await this.visits.unseal(sealed));if(game.pms?.roomNotes)data=await game.pms.roomNotes.definition(data);assertCaseAvailable(id);if(marked(vault,'sealed')!==sealed||(marked(vault,'editorRevision')??0)!==revision)throw new Error('Případ se mezitím změnil. Otevři přípravu znovu.');this.definitions.set(id,data);return data;}
  async initialize(){if(!game.user.isGM||game.pmsAuthority?.failed)return;if(!this.lifecycleHook)this.lifecycleHook=Hooks.on('deleteJournalEntry',doc=>{if(marked(doc,'kind')==='caseVault'){const id=marked(doc,'caseId');this.definitions.delete(id);this.runtimeDefinitions.delete(id);if(this.selectedId===id)this.selectedId=null;}});if(!this.authorityHook){this.authorityHook=Hooks.on('pmsAuthorityChanged',()=>{if(this.visits.isAuthority)this.initialize().then(()=>ui.controls.render({force:true})).catch(e=>ui.notifications.warn(e.message));});}for(const vault of game.journal.filter(d=>marked(d,'kind')==='caseVault'&&!caseRemoved(marked(d,'caseId')))){try{this.data=await this.reloadDefinition(marked(vault,'caseId'));}catch(e){ui.notifications.warn(e.message);}}
   const campaign=game.journal.find(d=>marked(d,'kind')==='avatarCampaign')?.getFlag(NS,'campaign');
   const preferred=campaign?.preparation?.caseId??this.visits.state?.caseId;if(this.definitions.has(preferred))this.selectedId=preferred;
@@ -146,6 +147,7 @@ export class CaseService {
    }
    }
    await game.pms?.npcTokens?.syncAll(data.id);
+   await game.pms?.roomNotes?.ensureForCase(data.id);
    await game.pms?.hub?.publishOffer(data);
    ui.notifications.info(`${data.title}: ${physical.npcs.length} NPC, ${physical.scenePlans.length} scén a neveřejná příprava.`);ui.controls.render({force:true});
   });}finally{this.busy=false;}
@@ -155,7 +157,7 @@ export class CaseService {
  installNpcPortraits(caseId=this.selectedId){return installCaseNpcPortraits(this,caseId);}
  async showEditor(){return game.pms.openCaseEditor();}
  async showGuide(options={}){if(!game.user.isGM||game.pmsAuthority?.failed)throw new Error('Příprava patří připojenému vypravěči.');const caseId=options.caseId??this.selectedId,data=this.forCase(caseId);if(!data){if(this.visits.isAuthority)return this.importDialog();throw new Error('Nejdřív importuj celý vybraný případ.');}
-  if(this.guideCaseId!==caseId){if(this.guideApplication)await this.guideApplication.close();this.guideApplication=undefined;}
+  if(this.guideCaseId!==caseId||this.guideApplication&&JSON.stringify(this.guideApplication.caseData?.roomNotes)!==JSON.stringify(data.roomNotes)){if(this.guideApplication)await this.guideApplication.close();this.guideApplication=undefined;}
   this.guideCaseId=caseId;this.guideApplication??=new PMSCaseJournal({caseData:data});return this.guideApplication.render({force:true,...options});}
  async showPreparation(options={}){
   if(!game.user.isGM||game.pmsAuthority?.failed)throw new Error('Příprava patří připojenému vypravěči.');

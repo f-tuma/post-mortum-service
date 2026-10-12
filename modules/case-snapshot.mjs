@@ -8,6 +8,9 @@ export function captureCaseSnapshot({caseId,actors,scenes,items=[],avatarActorId
   const party=new Set(avatarActorIds);
   return {caseId,actors:npcActors.map(source),items:items.filter(i=>flag(i,'caseBundle')===caseId&&flag(i,'caseTemplateItem')&&!flag(i,'sourceVisit')&&!i.system?.published).map(source),scenes:scenes.filter(s=>flag(s,'caseBundle')===caseId).map(scene=>{
     const data=source(scene);delete data.active;delete data.folder;delete data.sort;
+    // Local GM handouts are resolved by case/room identity after import or reset.
+    // Their world Journal IDs must not point back to the source World.
+    for(const note of data.notes??[])if(flag(note,'caseRoomNote')&&note.entryId===flag(note,'roomVaultId')){note.entryId=null;note.pageId=null;}
     // Avatar tokens are visit projections, not inhabitants of the starting reality.
     if(!includeAvatars)data.tokens=data.tokens.filter(t=>!party.has(t.actorId)&&actors.find(a=>a.id===t.actorId)?.type!=='avatar'&&!flag(t,'visitParty'));
     return data;

@@ -19,6 +19,7 @@ export class CaseMemoryService {
     await game.pms?.hub?.parkForReset(snapshot.caseId);
     const result=await restoreCaseSnapshot(snapshot,{actors:game.actors,scenes:game.scenes,items:game.items,folders:game.folders,createItem:(...args)=>Item.create(...args),deleteItems:ids=>Item.deleteDocuments(ids),createActor:(...args)=>Actor.create(...args),createScene:(...args)=>Scene.create(...args),deleteActors:ids=>Actor.deleteDocuments(ids),deleteScenes:ids=>Scene.deleteDocuments(ids),resetFog:id=>this.resetFog(id)});
     await game.pms?.npcTokens?.syncAll(snapshot.caseId);
+    await game.pms?.roomNotes?.ensureForCase(snapshot.caseId);
     return result;
   }
   resetFog(sceneId){

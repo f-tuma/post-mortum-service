@@ -14,6 +14,8 @@ export function validateLoopDefinition(data){
   if(!Number.isInteger(plan.version??1)||(plan.version??1)<1)throw new Error('Neplatná verze mapy.');
   list(plan.levels,20,1);unique(plan.levels.map(l=>definitionId(l.key)));unique(plan.levels.map(l=>l.id));
   const levels=new Set(plan.levels.map(l=>l.key));
+  list(plan.rooms??[],100);unique((plan.rooms??[]).map(r=>definitionId(r.id)));
+  for(const room of plan.rooms??[]){text(room.label);if(!levels.has(room.level??plan.levels[0].key))throw new Error('Místnost nemá platné podlaží.');bounded(room.x,0,plan.width);bounded(room.y,0,plan.height);bounded(room.w,1,plan.width-room.x);bounded(room.h,1,plan.height-room.y);}
   for(const level of plan.levels){if(!/^[a-zA-Z0-9]{16}$/.test(level.id))throw new Error('Neplatná identita podlaží.');text(level.name);bounded(level.bottom,-10000,10000);if(level.top!==null)bounded(level.top,level.bottom+0.01,10000);
    for(const asset of [level.asset,level.overlay].filter(Boolean))mapAsset(asset);
    levelTextureRegistration(plan,level);if(level.overlayRegistration)levelTextureRegistration(plan,{registration:level.overlayRegistration});

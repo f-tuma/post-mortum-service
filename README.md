@@ -2,7 +2,9 @@
 
 Vyšetřovací TTRPG systém pro Foundry VTT 14. Výpravy vstupují do samostatných realit, sbírají vodítka a skládají případy na společné tabuli důkazů. MHD uzavírá návštěvy; odrazy umožňují návraty bez změny skutečného výsledku.
 
-Aktuální verze: **0.13.10**, testovaná s Foundry **14.368**. Jde o verzi pro společné testování.
+Aktuální verze: **0.13.11**, testovaná s Foundry **14.368**. Jde o verzi pro společné testování.
+
+Verze 0.13.11 přidává nativní mapové připínáčky pro vypravěče. Tétové mají 23 místností a jeden připínáček Havraního zákrutu. Každý otevírá popis konkrétního místa a další přípravu; přístup i podlaží zůstávají nativní Foundry.
 
 Verze 0.13.10 opravuje interní odkazy v přípravě vypravěče a denících NPC: kapitoly, dokumenty a podlaží se otevírají přímo ve Foundry, také pomocí klávesnice. Hráčské texty úvodního případu popisují nálezy a svědectví bez komentářů vypravěče; úvod sektoru neprozrazuje řešení. Poznámky vypravěče nejsou součástí sdílené historie výpravy. Při připojení hlavního GM se opraví přesně odpovídající staré výchozí texty vodítek a průvodce; vlastní přepsané texty se zachovají.
 
@@ -33,6 +35,10 @@ Případ obsahuje informace pro vypravěče včetně řešení záhady. Při akt
 Na kartě případu v **Recepci → Pověření** klikni jako GM na **Příprava pro Vypravěče**. Nativní příručka obsahuje stručný souhrn záhady, důležité dějové situace, seznam přípravy, kapitoly k pročtení a odkazy na jednotlivá podlaží map a deníky NPC. Přípravu lze otevřít i před potvrzením společné volby případu.
 
 Prohlídka map změní pouze pohled vypravěče; neaktivuje scénu hráčům a nespustí výpravu. Seznam se ukládá zvlášť pro každý účet a svět v tomto prohlížeči. Změna kapitoly nebo výchozí mapy znovu otevře příslušný krok. Stručné souhrny upravíš v **Editoru případů → Případ**; přenášejí se spolu s případem, stav odškrtávání zůstává místní.
+
+Na mapě **dvojklikni na ikonu knihy v místnosti**. Otevře se soukromý deník s prvním dojmem, poznámkami pro vypravěče a odkazem na podrobnou kapitolu. Připínáčky patří příslušnému podlaží a hráčům se nezobrazují. Skrytí či zobrazení ovládá nativní přepínač mapových poznámek Foundry.
+
+Hlavní GM připínáčky doplní při načtení světa, při importu i po obnově herní smyčky. Vlastní polohy, popisky, ikony a přiřazení k patru zachová. Přenos případu opraví odkazy na místní přípravu; soukromé texty nejsou uložené v mapových poznámkách. Starší Tétové dostanou nové výchozí popisy, pokud jejich původní kapitoly lokací nebyly přepsané. Texty místností lze upravit v **Editoru případů → Příručka**, v kapitolách map označených „místnosti“.
 
 ## Správa případů, aktualizace a koš
 
@@ -66,7 +72,7 @@ Volba **Aktualizovat jen příručku** přenese pouze její obsah a použité so
 
 Tento repozitář obsahuje distribuovanou část systému. Pracovní podklady a testovací světy nejsou jeho součástí.
 
-Po změně verze v `system.json` vytvoř odpovídající Git tag, například `v0.13.10`. Workflow ověří verzi, sestaví `pms.zip`, `system.json`, `tetove.json` a kontrolní součty, nahraje je do návrhu vydání a po dokončení uploadu jej zveřejní.
+Po změně verze v `system.json` vytvoř odpovídající Git tag, například `v0.13.11`. Workflow ověří verzi, sestaví `pms.zip`, `system.json`, `tetove.json` a kontrolní součty, nahraje je do návrhu vydání a po dokončení uploadu jej zveřejní.
 
 Lokální sestavení z kořene tohoto repozitáře:
 

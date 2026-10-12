@@ -17,6 +17,7 @@ body.pms-system .application .window-content {background:var(--pms-panel)}
 body.pms-system :is(.journal-page-content,.journal-entry-content) {color:var(--pms-ink);background:transparent}
 .pms-case-guide a[role="button"] {color:var(--pms-sage);text-decoration:underline;text-underline-offset:3px}
 .pms-case-guide a[role="button"]:focus-visible {outline:2px solid var(--pms-focus);outline-offset:3px}
+.pms-case-guide .pms-room-brief + .pms-room-brief {margin-top:28px;padding-top:20px;border-top:1px solid var(--pms-faint)}
 body.pms-system :is(#sidebar,#sidebar-content,#players) {--color-text-primary:var(--pms-ink);--color-cool-5:var(--pms-bg)}
 :is(.pms-app,.pms-timeline,.pms-actor-sheet,.pms-item-sheet,.pms-dialog,.pms-flow-dialog,.pms-case-guide,.pms-case-menu,.pms-avatar-creation) {
  --pms-ink:#eee5d2;--pms-muted:#b4b8b5;--pms-rule:#82735d;--pms-navy:#101a24;--pms-focus:#a5c6b2;--pms-paper:var(--pms-panel);--mhd-paper:var(--pms-panel);--mhd-ink:var(--pms-ink);--mhd-rule:var(--pms-rule);--mhd-navy:var(--pms-navy);--mhd-sage:var(--pms-sage);
